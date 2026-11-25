@@ -56,7 +56,7 @@ h1 em{font-style:normal;color:var(--acc)}
 .tape b{font-weight:500}.tape .up{color:var(--acc)}.tape .down{color:var(--down)}.tape .amb{color:var(--amb)}
 h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-transform:uppercase}
 .h2s{color:var(--mut);font-size:13.5px;margin:0 0 10px}
-.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.picks{margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
 .pick{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;text-decoration:none;display:block}
 .pick:hover{border-color:var(--acc)}
 .pick .tag{font-size:11px;font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase}
@@ -153,7 +153,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 <p class="status m"><i class="dot"></i><b id="f1">–</b> <span>in stock at</span> <b id="nh2">–</b> <span>hosts · dedicated from</span> <b id="f2">–</b> <span>· checked</span> <b id="f4">–</b></p>
 <div class="tape m" id="tape" hidden><span class="lbl">Live</span><div class="view"><div class="track" id="track"></div></div></div>
 
-<h2>Best value right now</h2><p class="h2s">Among servers a host confirms as in stock.</p>
+<h2>Best value right now</h2>
 <div class="picks" id="picks"></div>
 
 <h2 id="all">All servers</h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
