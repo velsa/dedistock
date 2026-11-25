@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dedistock · dedicated servers and VPS in stock now</title>
+<meta name="description" content="Cheap dedicated servers and VPS you can order right now. OVH, Kimsufi-class Eco, Hetzner auction, Hetzner Cloud and Netcup stock, checked every 30 minutes. EU only.">
+<meta property="og:title" content="Dedistock · servers in stock now">
+<meta property="og:description" content="Dedicated servers and VPS you can really order today, checked every 30 minutes.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f5f1;--fg:#16171a;--muted:#6b6e75;--line:#e4e2db;--card:#fff;--soft:#efede7;--acc:#0f766e;--acc-soft:#dff1ee;--in:#15803d;--shadow:0 1px 2px rgba(0,0,0,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111214;--fg:#ececea;--muted:#9a9da4;--line:#2a2c31;--card:#191a1d;--soft:#222429;--acc:#2dd4bf;--acc-soft:#10302b;--in:#4ade80;--shadow:none}}
+:root[data-theme="dark"]{--bg:#111214;--fg:#ececea;--muted:#9a9da4;--line:#2a2c31;--card:#191a1d;--soft:#222429;--acc:#2dd4bf;--acc-soft:#10302b;--in:#4ade80;--shadow:none}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 Inter,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 0 6px}
+h1{font-size:22px;margin:0;letter-spacing:-.01em}
+.lede{margin:0 0 4px;font-size:14.5px}
+.sub{font-size:13px;color:var(--muted)}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--in);margin-right:5px;vertical-align:1px}
+.icon{width:36px;height:36px;border:1px solid var(--line);background:var(--card);border-radius:10px;display:grid;place-items:center;cursor:pointer}
+.icon svg{width:18px;height:18px}
+.top{position:sticky;top:0;z-index:10;background:var(--bg);padding:10px 0 4px}
+.provs{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 10px;scrollbar-width:none;margin:0 -16px}
+.provs::-webkit-scrollbar{display:none}
+.prov{flex:0 0 auto;min-width:118px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer}
+.prov[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-soft)}
+.prov b{display:block;font-size:13px}
+.prov .n{font-size:20px;font-weight:700;line-height:1.2}
+.prov .n small{font-size:12px;font-weight:500;color:var(--muted)}
+.prov .from{font-size:12px;color:var(--muted)}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:500;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip.ghost{display:flex;align-items:center;gap:5px}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin:8px 0 6px}
+.meta select{border:0;background:none;color:var(--fg);font:600 13px Inter;cursor:pointer}
+.list{display:grid;gap:6px}
+.row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:inherit;text-decoration:none}
+.row.out{opacity:.5}
+.row .t{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .p{font-weight:700;font-size:16px;text-align:right;white-space:nowrap}
+.row .s{font:500 12.5px "JetBrains Mono",monospace;color:var(--muted)}
+.row .w{font-size:12px;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.row .w.in{color:var(--in);font-weight:600}
+.empty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.more{display:block;margin:10px auto 0;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 16px;cursor:pointer}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:14px;font-size:13px;color:var(--muted)}
+footer ul{margin:6px 0 10px;padding-left:18px}
+footer p{margin:6px 0}
+dialog{border:0;border-radius:18px 18px 0 0;padding:0;width:100%;max-width:560px;margin:auto auto 0;background:var(--card);color:var(--fg)}
+@media (min-width:600px){dialog{border-radius:18px;margin:auto}}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+.sheet{padding:18px 16px calc(16px + env(safe-area-inset-bottom))}
+.sheet h2{font-size:18px;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fld label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.fld input,.fld select{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
+.fld.full{grid-column:1/-1}
+.chk{display:flex;align-items:center;gap:8px;grid-column:1/-1;font-size:14px}
+.acts{display:flex;gap:8px;margin-top:16px}
+.acts button{flex:1;padding:11px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:600;cursor:pointer}
+.acts .pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>Dedistock</h1><div class="sub"><span class="dot"></span><span id="at">…</span> · EU · €/month excl. VAT</div></div>
+    <button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
+  </header>
+  <p class="lede">Dedicated servers and VPS you can order right now.</p>
+
+  <div class="top">
+    <div class="provs" id="provs"></div>
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="meta"><span id="count"></span>
+    <label>Sort <select id="sort"><option value="price">price</option><option value="gb">€ per GB RAM</option><option value="thr">€ per thread</option></select></label></div>
+  <div class="list" id="list"></div>
+  <button class="more" id="more" hidden>Show more</button>
+
+  <footer>
+    <b>Sources</b>, checked every 30 minutes:
+    <ul id="sources"></ul>
+    <p>OVH Eco lists only servers that OVH marks "ready in about 1 hour". Hetzner auction prices fall over time. Netcup prices are for a 12-month term.</p>
+    <p>Prices can change before you order. Always check the host's page. We do not sell servers. Links go straight to the host.</p>
+    <p>Telegram alerts: coming soon.</p>
+  </footer>
+</div>
+
+<dialog id="dFilter"><form class="sheet" method="dialog">
+  <h2>Filters</h2>
+  <div class="grid">
+    <div class="fld"><label for="fThreads">Min threads</label><input id="fThreads" type="number" min="0" inputmode="numeric"></div>
+    <div class="fld"><label for="fRam">Min RAM, GB</label><input id="fRam" type="number" min="0" inputmode="numeric"></div>
+    <div class="fld"><label for="fDisk">Min disk, GB</label><input id="fDisk" type="number" min="0" inputmode="numeric"></div>
+    <div class="fld"><label for="fMax">Max €/month</label><input id="fMax" type="number" min="0" inputmode="decimal"></div>
+    <div class="fld full"><label for="fKind">Type</label><select id="fKind"><option value="">Dedicated and VPS</option><option value="dedicated">Dedicated only</option><option value="vps">VPS only</option></select></div>
+    <label class="chk"><input type="checkbox" id="fNvme"> NVMe only</label>
+    <label class="chk"><input type="checkbox" id="fSold"> Show sold-out plans</label>
+  </div>
+  <div class="acts"><button value="reset">Reset</button><button class="pri" value="ok">Show results</button></div>
+</form></dialog>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const t0=store.get('ds-theme',null); if(t0)document.documentElement.dataset.theme=t0;
+$('theme').onclick=()=>{const dark=matchMedia('(prefers-color-scheme: dark)').matches;const cur=document.documentElement.dataset.theme||(dark?'dark':'light');const n=cur==='dark'?'light':'dark';document.documentElement.dataset.theme=n;store.set('ds-theme',n)};
+
+let D={offers:[],sources:{}},shown=30;
+const F={threads:0,ram:0,disk:0,max:0,kind:'',nvme:false,sold:false,prov:''};
+const PRESETS=[{id:'all',label:'All',f:{}},{id:'ci',label:'8 threads · 16GB · ≤€30',f:{threads:8,ram:16,max:30}},
+  {id:'big',label:'128GB+ NVMe',f:{ram:128,nvme:true,kind:'dedicated'}},{id:'ded',label:'Dedicated ≤€60',f:{kind:'dedicated',max:60}},{id:'cheap',label:'Under €20',f:{max:20}}];
+let preset='all';
+function matches(o){
+  if(F.kind&&(o.kind==='dedicated')!==(F.kind==='dedicated'))return false;
+  if(o.threads<F.threads||o.ram<F.ram||o.disk<F.disk)return false;
+  if(F.max&&o.price>F.max)return false;
+  if(F.nvme&&!o.nvme)return false;
+  return (F.sold||o.stock==='in')&&(!F.prov||o.provider===F.prov);
+}
+function title(o){if(o.kind==='dedicated')return o.cpu.replace(/^(Intel|AMD)\s+/,'');return `${o.provider.split(' ')[0]} ${o.name.replace(/ G[\d.]+$/,'')}`+(o.cpu.includes('dedicated')?' · dedicated cores':/^VPS/.test(o.name)?'':' · VPS')}
+function ago(iso){const m=Math.round((Date.now()-new Date(iso))/60000);return m<1?'checked just now':m<60?`checked ${m} min ago`:m<1440?`checked ${Math.round(m/60)} h ago`:'data is old'}
+function renderProvs(){
+  const by={};D.offers.forEach(o=>{const b=by[o.provider]??={in:0,out:0,min:1e9};o.stock==='in'?(b.in++,b.min=Math.min(b.min,o.price)):b.out++});
+  $('provs').innerHTML=Object.entries(by).sort((a,b)=>b[1].in-a[1].in).map(([k,v])=>`<button class="prov" aria-pressed="${F.prov===k}" data-p="${esc(k)}"><b>${esc(k)}</b><div class="n">${v.in}${v.out?` <small>/ ${v.in+v.out}</small>`:''}</div><div class="from">${v.in?'from €'+v.min.toFixed(2):'all sold out'}</div></button>`).join('');
+  $('provs').querySelectorAll('.prov').forEach(b=>b.onclick=()=>{F.prov=F.prov===b.dataset.p?'':b.dataset.p;shown=30;render()});
+}
+function renderChips(){
+  const custom=preset==='custom';
+  $('chips').innerHTML=PRESETS.map(p=>`<button class="chip" aria-pressed="${preset===p.id}" data-id="${p.id}">${esc(p.label)}</button>`).join('')+
+    `<button class="chip ghost" aria-pressed="${custom}" id="openF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>${custom?'Custom':'Filters'}</button>`;
+  $('chips').querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{preset=b.dataset.id;Object.assign(F,{threads:0,ram:0,disk:0,max:0,kind:'',nvme:false},PRESETS.find(p=>p.id===preset).f);shown=30;render()});
+  $('openF').onclick=()=>{$('fThreads').value=F.threads||'';$('fRam').value=F.ram||'';$('fDisk').value=F.disk||'';$('fMax').value=F.max||'';$('fKind').value=F.kind;$('fNvme').checked=F.nvme;$('fSold').checked=F.sold;$('dFilter').showModal()};
+}
+function render(){
+  renderProvs();renderChips();
+  const key={price:o=>o.price,gb:o=>o.price/o.ram,thr:o=>o.price/o.threads}[$('sort').value];
+  const rows=D.offers.filter(matches).sort((a,b)=>(a.stock===b.stock?0:a.stock==='in'?-1:1)||key(a)-key(b));
+  $('count').textContent=`${rows.filter(o=>o.stock==='in').length} in stock`+(F.prov?` at ${F.prov}`:'');
+  $('list').innerHTML=rows.length?rows.slice(0,shown).map(o=>`<a class="row ${o.stock}" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">
+    <span class="t">${esc(title(o))}</span><span class="p">€${o.price.toFixed(2)}</span>
+    <span class="s">${o.threads}t · ${o.ram}GB · ${o.disk>=1000?(o.disk/1000).toFixed(1)+'TB':o.disk+'GB'}${o.nvme?' NVMe':''}</span>
+    <span class="w ${o.stock}" title="${esc((o.where||[]).join(', '))}">${o.stock==='in'?esc(o.provider.split(' ')[0])+' · '+esc((o.where||[])[0]||''):'sold out'}</span></a>`).join('')
+    :'<div class="empty">Nothing in stock matches right now.<br>Try a higher price or fewer threads.</div>';
+  $('more').hidden=rows.length<=shown;
+}
+$('dFilter').addEventListener('close',()=>{const v=$('dFilter').returnValue;
+  if(v==='reset'){Object.assign(F,{threads:0,ram:0,disk:0,max:0,kind:'',nvme:false,sold:false});preset='all'}
+  else if(v==='ok'){Object.assign(F,{threads:+$('fThreads').value||0,ram:+$('fRam').value||0,disk:+$('fDisk').value||0,max:+$('fMax').value||0,kind:$('fKind').value,nvme:$('fNvme').checked,sold:$('fSold').checked});preset='custom'}
+  shown=30;render()});
+$('sort').onchange=render;$('more').onclick=()=>{shown+=30;render()};
+fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{D=d;$('at').textContent=ago(d.at);$('at').title=new Date(d.at).toLocaleString();
+  $('sources').innerHTML=Object.entries(d.sources).map(([k,v])=>`<li>${esc(k)}: ${esc(String(v).split(',')[0])}</li>`).join('');render()})
+  .catch(()=>{$('list').innerHTML='<div class="empty">Could not load stock data.</div>'});
+})();
+</script>
+</body>
+</html>
