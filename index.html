@@ -8,6 +8,8 @@
 <meta property="og:title" content="Dedistock · servers you can order today">
 <meta property="og:description" content="Cheap servers sell out in hours. We check the hosts every 10 minutes and list only what is in stock.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://dedistock.com/">
+<link rel="canonical" href="https://dedistock.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a6b45'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23ffffff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -85,6 +87,11 @@ h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-tr
 .alert{height:36px;display:inline-flex;align-items:center;gap:7px;padding:0 12px;border-radius:6px;background:var(--acc);color:var(--accfg);font:500 14px Geist,sans-serif;text-decoration:none;white-space:nowrap}
 .alert:hover{filter:brightness(1.08)}
 .alert svg{width:15px;height:15px}
+.amenu{min-width:260px;white-space:normal}
+.amenu a{display:block;font:500 14px Geist,sans-serif;padding:9px 10px;border-radius:5px;text-decoration:none;color:var(--fg)}
+.amenu a:hover,.amenu a:focus{background:var(--tint);outline:0}
+.amh,.amf{font-size:12px;color:var(--mut);padding:6px 10px}
+.amf{border-top:1px solid var(--line);margin-top:4px}
 .bar .n{margin-left:10px}
 .reset{font:500 13px Geist;background:none;border:0;color:var(--acc);cursor:pointer;padding:0 0 8px;text-decoration:underline}
 table{width:100%;border-collapse:collapse;font-size:14px}
@@ -147,7 +154,7 @@ footer p{margin:4px 0}
 <div class="picks" id="picks"></div>
 
 <h2 id="all">All servers</h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
-<div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Alert me on Telegram</span></a><span class="n m" id="n"></span></div>
+<div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div><span class="n m" id="n"></span></div>
 <table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th>Location</th><th>Stock</th><th class="r" data-k="price">€ / month</th><th class="r" data-k="gb">€ / GB</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
@@ -204,7 +211,7 @@ function cur(u){const o=u.opts.find(x=>String(x[0])===String(F[u.id]));return o?
 function build(){$('fields').innerHTML=UI.filter(u=>!u.hide).map(u=>u.step?
  `<div class="fl"><span class="lab" id="l-${u.id}">${u.label}</span><div class="stp${F.t?' on':''}" role="group" aria-labelledby="l-${u.id}"><button type="button" data-step="-1" aria-label="Fewer threads"${F.t?'':' disabled'}>−</button><output aria-live="polite">${F.t?F.t+' +':'Any'}</output><button type="button" data-step="1" aria-label="More threads"${F.t>=STEPS[STEPS.length-1]?' disabled':''}>+</button></div></div>`
  :`<div class="fl dd" data-id="${u.id}"><span class="lab" id="l-${u.id}">${u.label}</span><button type="button" class="ddb${F[u.id]?' on':''}" id="b-${u.id}" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="l-${u.id} b-${u.id}"><span>${esc(cur(u))}</span>${CHEV}</button><ul class="ddl" role="listbox" aria-labelledby="l-${u.id}" hidden>${u.opts.map(o=>`<li role="option" tabindex="-1" data-v="${esc(o[0])}" aria-selected="${String(o[0])===String(F[u.id])}">${esc(o[1])}</li>`).join('')}</ul></div>`).join('')}
-function closeAll(){document.querySelectorAll('.ddl:not([hidden])').forEach(l=>{l.hidden=true;l.previousElementSibling.setAttribute('aria-expanded','false')})}
+function closeAll(){document.querySelectorAll('.dd .ddl:not([hidden])').forEach(l=>{l.hidden=true;l.previousElementSibling.setAttribute('aria-expanded','false')})}
 function openDD(dd){closeAll();const b=dd.querySelector('.ddb'),l=dd.querySelector('.ddl');l.hidden=false;l.classList.remove('right');b.setAttribute('aria-expanded','true');
  if(l.getBoundingClientRect().right>innerWidth-8)l.classList.add('right');(l.querySelector('[aria-selected="true"]')||l.firstElementChild).focus()}
 function apply(focusId){shown=60;build();draw();if(focusId){const b=$(focusId);if(b)b.focus()}}
@@ -220,6 +227,13 @@ $('fields').addEventListener('keydown',e=>{const b=e.target.closest('.ddb'),li=e
   else if(e.key==='Home'){e.preventDefault();all[0].focus()}else if(e.key==='End'){e.preventDefault();all[all.length-1].focus()}
   else if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(li)}else if(e.key==='Escape'||e.key==='Tab'){const id=li.closest('.dd').dataset.id;closeAll();if(e.key==='Escape')$('b-'+id).focus()}}});
 document.addEventListener('click',e=>{if(!e.target.closest('.dd'))closeAll()});
+// No filter set: do not send people to Telegram with nothing. Offer ready alerts here, one tap each.
+const APRE=[['kdp30','Dedicated up to €30'],['t8r16p30','8 threads, 16 GB, up to €30'],['kdr64p60','Dedicated, 64 GB+, up to €60'],['kdynp50','Dedicated NVMe up to €50'],['kvp10','VPS up to €10']];
+$('apre').innerHTML=APRE.map(([c,l])=>`<a role="menuitem" href="https://t.me/DedistockBot?start=${c}" target="_blank" rel="noopener">${l}</a>`).join('');
+const amClose=()=>{$('amenu').hidden=true;$('alert').setAttribute('aria-expanded','false')};
+$('alert').addEventListener('click',e=>{if($('alert').dataset.code)return;e.preventDefault();const open=$('amenu').hidden;closeAll();$('amenu').hidden=!open;$('alert').setAttribute('aria-expanded',String(open));if(open)$('apre').firstElementChild.focus()});
+document.addEventListener('click',e=>{if(!e.target.closest('.am'))amClose()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('amenu').hidden){amClose();$('alert').focus()}});
 function readURL(){const q=new URLSearchParams(location.search);for(const [f,k] of Object.entries(QK))if(q.has(k))F[f]=NUM.includes(f)?(+q.get(k)||0):q.get(k);if(q.get('n')==='1')F.dt='nvme';
  if(q.get('o')){sort=q.get('o');dir=q.get('d')==='desc'?-1:1}}
 function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}
@@ -237,7 +251,7 @@ function draw(){
  $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">€${o.price.toFixed(2)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
  const code=(F.kind?'k'+F.kind[0]:'')+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
- $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alertTxt').textContent=code?'Alert me on these':'Alert me on Telegram';
+ $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
  writeURL();
 }
 $('reset').onclick=()=>{for(const k in F)F[k]=NUM.includes(k)?0:'';apply()};
