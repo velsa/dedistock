@@ -44,6 +44,9 @@ h1 em{font-style:normal;color:var(--acc)}
 .tape:hover .track,.tape:active .track{animation-play-state:paused}
 @keyframes tick{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.tape .track{animation:none}.tape .view{overflow-x:auto}.dot{animation:none}}
+.tape a{color:inherit;text-decoration:none;padding:2px 0}
+.tape a:hover,.tape a:focus-visible{color:var(--fg);text-decoration:underline;outline:0}
+.tape:focus-within .track{animation-play-state:paused}
 .tape b{font-weight:500}.tape .up{color:var(--acc)}.tape .down{color:var(--down)}.tape .amb{color:var(--amb)}
 h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-transform:uppercase}
 .h2s{color:var(--mut);font-size:13.5px;margin:0 0 10px}
@@ -256,8 +259,10 @@ fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
 fetch('events.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(ev=>{if(!ev.length)return;
  const lab={sold_out:['down','Sold out'],appeared:['up','New'],restocked:['up','Back'],price_changed:['amb','Price']};
  const items=ev.filter(e=>lab[e.type]).map(e=>{const [c,l]=lab[e.type],n=e.kind==='dedicated'?e.cpu.replace(/^(Intel|AMD)\s+/,''):e.name;
-  const pr=e.type==='price_changed'?`€${e.old_price} → €${e.new_price}`:'€'+(e.new_price??e.old_price);return `<span><b class="${c}">${l}</b> ${esc(n)} ${e.ram}GB · ${esc(e.provider)} · ${pr} · ${ago(e.at)}</span>`}).join('');
- if(!items)return;$('tape').hidden=false;$('track').innerHTML=items+items;                 // doubled, so the loop has no seam
+  const pr=e.type==='price_changed'?`€${e.old_price} → €${e.new_price}`:'€'+(e.new_price??e.old_price);// Each item opens the host's page for that server. No stored page yet -> our table filtered to that host.
+  const sold=e.type==='sold_out',href=e.url||('?h='+encodeURIComponent(e.provider)+'#all'),ext=!!e.url;
+  return `<a href="${esc(href)}"${ext?' target="_blank" rel="noopener nofollow"':''} title="${sold?'Sold out. Open the host page to see what is left':'Open on '+esc(e.provider)}"><b class="${c}">${l}</b> ${esc(n)} ${e.ram}GB · ${esc(e.provider)} · ${pr} · ${ago(e.at)}${ext?' ↗':''}</a>`}).join('');
+ if(!items)return;$('tape').hidden=false;$('track').innerHTML=items+items.replace(/<a /g,'<a tabindex="-1" aria-hidden="true" ');                 // doubled, so the loop has no seam
  $('track').style.setProperty('--dur',Math.round($('track').scrollWidth/2/40)+'s')}).catch(()=>{});   // about 40 px per second: easy to read
 })();
 </script>
