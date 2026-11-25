@@ -49,6 +49,10 @@ h1{font-size:22px;margin:0;letter-spacing:-.01em}
 .row .s{font:500 12.5px "JetBrains Mono",monospace;color:var(--muted)}
 .row .w{font-size:12px;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
 .row .w.in{color:var(--in);font-weight:600}
+.row .w.unc{color:var(--muted);font-weight:500}
+.lbl{font:600 10.5px Inter;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:1px}
+.banner{background:#fef3c7;color:#78350f;border-radius:10px;padding:8px 12px;font-size:13.5px;margin:6px 0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .banner{background:#3a2a0a;color:#fde68a}}
 .empty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
 .more{display:block;margin:10px auto 0;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 16px;cursor:pointer}
 footer{margin-top:28px;border-top:1px solid var(--line);padding-top:14px;font-size:13px;color:var(--muted)}
@@ -80,6 +84,7 @@ input,select,textarea{font-size:16px!important}
     <button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
   </header>
   <p class="lede">Dedicated servers and VPS you can order right now.</p>
+  <div class="banner" id="banner" hidden></div>
 
   <div class="top">
     <div class="provs" id="provs"></div>
@@ -93,7 +98,7 @@ input,select,textarea{font-size:16px!important}
   <footer>
     <b>Sources</b>, checked every 30 minutes:
     <ul id="sources"></ul>
-    <p>OVH Eco lists only servers that OVH marks "ready in about 1 hour". Hetzner auction prices fall over time. Netcup prices are for a 12-month term.</p>
+    <p>OVH Eco lists only servers that OVH marks "ready in about 1 hour". <b>likely</b> = the host's API says available, without a guarantee. <b>listed</b> = on the host's price page; the host gives no stock signal. Hetzner auction prices include the IPv4 address. Netcup prices are for a 12-month term.</p>
     <p>Prices can change before you order. Always check the host's page. We do not sell servers. Links go straight to the host.</p>
     <p>Telegram alerts: coming soon.</p>
   </footer>
@@ -126,17 +131,21 @@ const F={threads:0,ram:0,disk:0,max:0,kind:'',nvme:false,sold:false,prov:''};
 const PRESETS=[{id:'all',label:'All',f:{}},{id:'ci',label:'8 threads · 16GB · ≤€30',f:{threads:8,ram:16,max:30}},
   {id:'big',label:'128GB+ NVMe',f:{ram:128,nvme:true,kind:'dedicated'}},{id:'ded',label:'Dedicated ≤€60',f:{kind:'dedicated',max:60}},{id:'cheap',label:'Under €20',f:{max:20}}];
 let preset='all';
+// Freshness per source (spec public-site): > 2 h since last success = "not confirmed", > 6 h = hidden from in-stock lists.
+const H=3600e3;let FRESH={};
+function fresh(o){const f=FRESH[o.provider];return f===undefined?2:f}   // 0 fresh, 1 not confirmed, 2 too old
+function inStock(o){return o.stock==='in'&&fresh(o)<2}
 function matches(o){
   if(F.kind&&(o.kind==='dedicated')!==(F.kind==='dedicated'))return false;
   if(o.threads<F.threads||o.ram<F.ram||o.disk<F.disk)return false;
   if(F.max&&o.price>F.max)return false;
   if(F.nvme&&!o.nvme)return false;
-  return (F.sold||o.stock==='in')&&(!F.prov||o.provider===F.prov);
+  return (F.sold||inStock(o))&&(!F.prov||o.provider===F.prov);
 }
 function title(o){if(o.kind==='dedicated')return o.cpu.replace(/^(Intel|AMD)\s+/,'');return `${o.provider.split(' ')[0]} ${o.name.replace(/ G[\d.]+$/,'')}`+(o.cpu.includes('dedicated')?' · dedicated cores':/^VPS/.test(o.name)?'':' · VPS')}
 function ago(iso){const m=Math.round((Date.now()-new Date(iso))/60000);return m<1?'checked just now':m<60?`checked ${m} min ago`:m<1440?`checked ${Math.round(m/60)} h ago`:'data is old'}
 function renderProvs(){
-  const by={};D.offers.forEach(o=>{const b=by[o.provider]??={in:0,out:0,min:1e9};o.stock==='in'?(b.in++,b.min=Math.min(b.min,o.price)):b.out++});
+  const by={};D.offers.forEach(o=>{const b=by[o.provider]??={in:0,out:0,min:1e9};inStock(o)?(b.in++,b.min=Math.min(b.min,o.price)):b.out++});
   $('provs').innerHTML=Object.entries(by).sort((a,b)=>b[1].in-a[1].in).map(([k,v])=>`<button class="prov" aria-pressed="${F.prov===k}" data-p="${esc(k)}"><b>${esc(k)}</b><div class="n">${v.in}${v.out?` <small>/ ${v.in+v.out}</small>`:''}</div><div class="from">${v.in?'from €'+v.min.toFixed(2):'all sold out'}</div></button>`).join('');
   $('provs').querySelectorAll('.prov').forEach(b=>b.onclick=()=>{F.prov=F.prov===b.dataset.p?'':b.dataset.p;shown=30;render()});
 }
@@ -150,12 +159,13 @@ function renderChips(){
 function render(){
   renderProvs();renderChips();
   const key={price:o=>o.price,gb:o=>o.price/o.ram,thr:o=>o.price/o.threads}[$('sort').value];
-  const rows=D.offers.filter(matches).sort((a,b)=>(a.stock===b.stock?0:a.stock==='in'?-1:1)||key(a)-key(b));
-  $('count').textContent=`${rows.filter(o=>o.stock==='in').length} in stock`+(F.prov?` at ${F.prov}`:'');
-  $('list').innerHTML=rows.length?rows.slice(0,shown).map(o=>`<a class="row ${o.stock}" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">
-    <span class="t">${esc(title(o))}</span><span class="p">€${o.price.toFixed(2)}</span>
+  const rows=D.offers.filter(matches).sort((a,b)=>(inStock(a)===inStock(b)?0:inStock(a)?-1:1)||key(a)-key(b));
+  $('count').textContent=`${rows.filter(inStock).length} in stock`+(F.prov?` at ${F.prov}`:'');
+  $('list').innerHTML=rows.length?rows.slice(0,shown).map(o=>{const ok=inStock(o),unc=ok&&fresh(o)===1;return `<a class="row ${ok?'in':'out'}" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">
+    <span class="t">${esc(title(o))}${o.signal==='listed'?'<span class="lbl" title="Listed on the host page. The host gives no stock signal.">listed</span>':o.signal==='indicative'?'<span class="lbl" title="The host API says available, without a guarantee.">likely</span>':''}</span><span class="p">€${o.price.toFixed(2)}</span>
     <span class="s">${o.threads}t · ${o.ram}GB · ${o.disk>=1000?(o.disk/1000).toFixed(1)+'TB':o.disk+'GB'}${o.nvme?' NVMe':''}</span>
-    <span class="w ${o.stock}" title="${esc((o.where||[]).join(', '))}">${o.stock==='in'?esc(o.provider.split(' ')[0])+' · '+esc((o.where||[])[0]||''):'sold out'}</span></a>`).join('')
+    <span class="w ${unc?'unc':ok?'in':'out'}" title="${esc((o.where||[]).join(', '))}">${unc?'not confirmed':ok?esc(o.provider.split(' ')[0])+' · '+esc((o.where||[])[0]||''):(o.stock==='in'?'stock unknown':'sold out')}</span>
+    ${o.term!=='monthly'||o.setup_fee||o.note?`<span class="s" style="grid-column:1/-1">${[o.term!=='monthly'?esc(o.term)+' term':'',o.setup_fee?'setup €'+o.setup_fee:'',esc(o.note||'')].filter(Boolean).join(' · ')}</span>`:''}</a>`}).join('')
     :'<div class="empty">Nothing in stock matches right now.<br>Try a higher price or fewer threads.</div>';
   $('more').hidden=rows.length<=shown;
 }
@@ -165,7 +175,11 @@ $('dFilter').addEventListener('close',()=>{const v=$('dFilter').returnValue;
   shown=30;render()});
 $('sort').onchange=render;$('more').onclick=()=>{shown+=30;render()};
 fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{D=d;$('at').textContent=ago(d.at);$('at').title=new Date(d.at).toLocaleString();
-  $('sources').innerHTML=Object.entries(d.sources).map(([k,v])=>`<li>${esc(k)}: ${esc(String(v).split(',')[0])}</li>`).join('');render()})
+  const now=Date.now(),stale=[];
+  for(const [k,v] of Object.entries(d.sources)){const t=v.last_success?now-new Date(v.last_success):Infinity;FRESH[k]=t>6*H?2:t>2*H?1:0;if(FRESH[k])stale.push(k)}
+  if(now-new Date(d.at)>2*H){$('banner').hidden=false;$('banner').textContent=`This data is from ${new Date(d.at).toLocaleString()}. Stock may have changed.`}
+  else if(stale.length){$('banner').hidden=false;$('banner').textContent=`Not confirmed right now: ${stale.join(', ')}. Their last good check was over 2 hours ago.`}
+  $('sources').innerHTML=Object.entries(d.sources).map(([k,v])=>`<li>${esc(k)}: ${v.state==='ok'||v.state==='partial'?'ok':esc(v.state)}${v.last_success?', last good check '+esc(ago(v.last_success).replace('checked ','')):''}</li>`).join('');render()})
   .catch(()=>{$('list').innerHTML='<div class="empty">Could not load stock data.</div>'});
 })();
 </script>
