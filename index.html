@@ -56,9 +56,27 @@ h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-tr
 .pick .nm{font-weight:600}
 .pick .sp{font-size:14px;color:var(--mut)}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:10px 0;border-bottom:1px solid var(--fg)}
-.bar label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);display:flex;flex-direction:column;gap:3px}
-.bar select,.bar input{font:500 16px "Geist Mono",monospace;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-width:0;height:36px}
-.bar input{width:78px}
+#fields{display:contents}
+.fl{display:flex;flex-direction:column;gap:3px;position:relative}
+.lab{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.ddb{height:36px;display:flex;align-items:center;gap:8px;justify-content:space-between;font:500 14px "Geist Mono",monospace;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:0 10px;cursor:pointer;min-width:82px;white-space:nowrap}
+.ddb:hover,.stp:hover{border-color:var(--mut)}
+.ddb.on{border-color:var(--acc);color:var(--acc)}
+.ddb svg{width:11px;height:11px;opacity:.6;transition:transform .12s}
+.ddb[aria-expanded="true"] svg{transform:rotate(180deg)}
+.ddl{position:absolute;top:100%;left:0;margin:4px 0 0;padding:4px;list-style:none;min-width:100%;max-height:296px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,.16);z-index:20}
+.ddl.right{left:auto;right:0}
+.ddl li{font:500 14px "Geist Mono",monospace;padding:8px 28px 8px 10px;border-radius:5px;cursor:pointer;white-space:nowrap;position:relative}
+.ddl li:hover,.ddl li:focus{background:var(--tint);outline:0}
+.ddl li[aria-selected="true"]{color:var(--acc)}
+.ddl li[aria-selected="true"]::after{content:"";position:absolute;right:10px;top:50%;width:9px;height:5px;border-left:2px solid;border-bottom:2px solid;transform:translateY(-70%) rotate(-45deg)}
+.stp{height:36px;display:flex;align-items:center;border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.stp.on{border-color:var(--acc)}
+.stp button{width:36px;height:100%;border:0;background:none;color:var(--fg);font:500 18px/1 "Geist Mono",monospace;cursor:pointer}
+.stp button:hover:not(:disabled){background:var(--tint)}
+.stp button:disabled{opacity:.3;cursor:default}
+.stp output{min-width:50px;text-align:center;font:500 14px "Geist Mono",monospace}
+.ddb:focus-visible,.stp button:focus-visible,.reset:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
 .bar .sp{flex:1}
 .bar .n{font-size:12.5px;color:var(--mut);padding-bottom:8px}
 .reset{font:500 13px Geist;background:none;border:0;color:var(--acc);cursor:pointer;padding:0 0 8px;text-decoration:underline}
@@ -100,7 +118,6 @@ footer p{margin:4px 0}
  .c .t{font-weight:600}.c .p{font:500 16px "Geist Mono",monospace;text-align:right}
  .c .s{font:400 12.5px "Geist Mono",monospace;color:var(--mut)}.c .w{font-size:12.5px;text-align:right;color:var(--mut)}
  .c .x{grid-column:1/-1;font-size:12.5px;color:var(--mut)}
- .bar input{width:68px}
 }
 </style>
 </head>
@@ -123,17 +140,7 @@ footer p{margin:4px 0}
 <div class="picks" id="picks"></div>
 
 <h2 id="all">All servers</h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
-<div class="bar">
- <label>Type<select id="kind"><option value="">All</option><option value="dedicated">Dedicated</option><option value="vps">VPS</option></select></label>
- <label>Host<select id="prov"><option value="">All</option></select></label>
- <label>Region<select id="reg"><option value="">All</option></select></label>
- <label>Threads ≥<input id="t" type="number" min="0" inputmode="numeric" placeholder="any"></label>
- <label>RAM ≥ GB<input id="r" type="number" min="0" inputmode="numeric" placeholder="any"></label>
- <label>€ ≤<input id="p" type="number" min="0" inputmode="decimal" placeholder="any"></label>
- <label>Disk<select id="nv"><option value="">Any</option><option value="1">NVMe</option></select></label>
- <button class="reset" id="reset" hidden>Reset</button>
- <span class="sp"></span><span class="n m" id="n"></span>
-</div>
+<div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><span class="n m" id="n"></span></div>
 <table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th>Location</th><th>Stock</th><th class="r" data-k="price">€ / month</th><th class="r" data-k="gb">€ / GB</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
@@ -167,22 +174,52 @@ const H=3600e3;let D=[],FRESH={},sort='price',dir=1,shown=60;
 const fresh=o=>FRESH[o.provider]??2;                 // 0 fresh, 1 not confirmed (>2 h), 2 too old (>6 h)
 const name=o=>o.kind==='dedicated'?o.cpu.replace(/^(Intel|AMD)\s+/,''):o.name.replace(/ G[\d.]+$/,'');
 const sub=o=>(o.kind==='dedicated'?o.name:o.cpu)+(o.term!=='monthly'?' · '+o.term+' term':'')+(o.setup_fee?' · setup €'+o.setup_fee:'');
-const dsk=o=>o.disk?(o.disk>=1000?(o.disk/1000).toFixed(1)+' TB':o.disk+' GB')+(o.nvme?' NVMe':''):'extra';
+const DT={nvme:' NVMe',ssd:' SSD',hdd:' HDD',mixed:' mixed'};
+const dsk=o=>o.disk?(o.disk>=1000?(o.disk/1000).toFixed(1)+' TB':o.disk+' GB')+(DT[o.disk_type]||(o.nvme?' NVMe':'')):'extra';
 const badge=o=>fresh(o)===1?'<span class="badge un">Not confirmed</span>':o.signal==='listed'?'<span class="badge ls">Listed</span>':o.signal==='indicative'?'<span class="badge lk">Likely</span>':'<span class="badge">In stock</span>';
 const region=o=>o.region||'Europe';
 // One row per plan and price: merge the locations (Hetzner Cloud and Scaleway list each city separately).
 function group(list){const m=new Map();for(const o of list){const k=[o.provider,o.name,o.cpu,o.threads,o.ram,o.disk,o.price,o.signal,o.term,region(o),o.provider==='Hetzner auction'?o.sku:''].join('|');
   const g=m.get(k);if(g){for(const w of o.where)if(!g.where.includes(w))g.where.push(w)}else m.set(k,{...o,where:[...o.where]})}return [...m.values()]}
 
-const F={kind:'',prov:'',reg:'',t:0,r:0,p:0,nv:''},QK={kind:'k',prov:'h',reg:'g',t:'t',r:'r',p:'p',nv:'n'};
-function readURL(){const q=new URLSearchParams(location.search);for(const [f,k] of Object.entries(QK))if(q.has(k))F[f]=(f==='t'||f==='r'||f==='p')?(+q.get(k)||0):q.get(k);
+const NUM=['t','r','p','ds'],F={kind:'',prov:'',reg:'',t:0,r:0,p:0,dt:'',ds:0},QK={kind:'k',prov:'h',reg:'g',t:'t',r:'r',p:'p',dt:'y',ds:'s'};
+const STEPS=[0,2,4,6,8,12,16,24,32,48,64,96,128],gb=v=>v>=1000?(v/1000)+' TB':v+' GB';
+// Filter controls are our own components (a listbox dropdown and a stepper), not browser defaults.
+const UI=[{id:'kind',label:'Type',opts:[['','All'],['dedicated','Dedicated'],['vps','VPS']]},{id:'prov',label:'Host',opts:[['','All']]},{id:'reg',label:'Region',opts:[['','All']],hide:true},
+ {id:'t',label:'Threads',step:true},
+ {id:'r',label:'RAM',opts:[0,4,8,16,32,64,128,256,512].map(v=>[v,v?v+' GB +':'Any'])},
+ {id:'p',label:'Price / month',opts:[0,10,20,30,50,75,100,150,250,500].map(v=>[v,v?'up to €'+v:'Any'])},
+ {id:'dt',label:'Disk type',opts:[['','Any'],['nvme','NVMe'],['ssd','SSD'],['hdd','HDD']]},
+ {id:'ds',label:'Disk size',opts:[0,250,500,1000,2000,4000,10000].map(v=>[v,v?gb(v)+' +':'Any'])}];
+const CHEV='<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg>';
+function cur(u){const o=u.opts.find(x=>String(x[0])===String(F[u.id]));return o?o[1]:u.id==='p'?'up to €'+F.p:u.id==='r'?F.r+' GB +':u.id==='ds'?gb(F.ds)+' +':String(F[u.id])}
+function build(){$('fields').innerHTML=UI.filter(u=>!u.hide).map(u=>u.step?
+ `<div class="fl"><span class="lab" id="l-${u.id}">${u.label}</span><div class="stp${F.t?' on':''}" role="group" aria-labelledby="l-${u.id}"><button type="button" data-step="-1" aria-label="Fewer threads"${F.t?'':' disabled'}>−</button><output aria-live="polite">${F.t?F.t+' +':'Any'}</output><button type="button" data-step="1" aria-label="More threads"${F.t>=STEPS[STEPS.length-1]?' disabled':''}>+</button></div></div>`
+ :`<div class="fl dd" data-id="${u.id}"><span class="lab" id="l-${u.id}">${u.label}</span><button type="button" class="ddb${F[u.id]?' on':''}" id="b-${u.id}" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="l-${u.id} b-${u.id}"><span>${esc(cur(u))}</span>${CHEV}</button><ul class="ddl" role="listbox" aria-labelledby="l-${u.id}" hidden>${u.opts.map(o=>`<li role="option" tabindex="-1" data-v="${esc(o[0])}" aria-selected="${String(o[0])===String(F[u.id])}">${esc(o[1])}</li>`).join('')}</ul></div>`).join('')}
+function closeAll(){document.querySelectorAll('.ddl:not([hidden])').forEach(l=>{l.hidden=true;l.previousElementSibling.setAttribute('aria-expanded','false')})}
+function openDD(dd){closeAll();const b=dd.querySelector('.ddb'),l=dd.querySelector('.ddl');l.hidden=false;l.classList.remove('right');b.setAttribute('aria-expanded','true');
+ if(l.getBoundingClientRect().right>innerWidth-8)l.classList.add('right');(l.querySelector('[aria-selected="true"]')||l.firstElementChild).focus()}
+function apply(focusId){shown=60;build();draw();if(focusId){const b=$(focusId);if(b)b.focus()}}
+function pick(li){const id=li.closest('.dd').dataset.id,v=li.dataset.v;F[id]=NUM.includes(id)?(+v||0):v;apply('b-'+id)}
+$('fields').addEventListener('click',e=>{const st=e.target.closest('[data-step]');
+ if(st){const d=+st.dataset.step;F.t=d>0?(STEPS.find(x=>x>F.t)??F.t):([...STEPS].reverse().find(x=>x<F.t)??0);apply();const nb=$('fields').querySelector(`[data-step="${d}"]`);if(nb&&!nb.disabled)nb.focus();return}
+ const b=e.target.closest('.ddb');if(b){b.getAttribute('aria-expanded')==='true'?closeAll():openDD(b.parentElement);return}
+ const li=e.target.closest('.ddl li');if(li)pick(li)});
+$('fields').addEventListener('keydown',e=>{const b=e.target.closest('.ddb'),li=e.target.closest('.ddl li');
+ if(b&&(e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();openDD(b.parentElement)}
+ if(li){const all=[...li.parentElement.children],i=all.indexOf(li);
+  if(e.key==='ArrowDown'){e.preventDefault();(all[i+1]||all[0]).focus()}else if(e.key==='ArrowUp'){e.preventDefault();(all[i-1]||all[all.length-1]).focus()}
+  else if(e.key==='Home'){e.preventDefault();all[0].focus()}else if(e.key==='End'){e.preventDefault();all[all.length-1].focus()}
+  else if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(li)}else if(e.key==='Escape'||e.key==='Tab'){const id=li.closest('.dd').dataset.id;closeAll();if(e.key==='Escape')$('b-'+id).focus()}}});
+document.addEventListener('click',e=>{if(!e.target.closest('.dd'))closeAll()});
+function readURL(){const q=new URLSearchParams(location.search);for(const [f,k] of Object.entries(QK))if(q.has(k))F[f]=NUM.includes(f)?(+q.get(k)||0):q.get(k);if(q.get('n')==='1')F.dt='nvme';
  if(q.get('o')){sort=q.get('o');dir=q.get('d')==='desc'?-1:1}}
 function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}
  const u=location.pathname+(q.toString()?'?'+q:'');if(u!==location.pathname+location.search)history.replaceState(null,'',u)}
-function syncInputs(){$('kind').value=F.kind;$('prov').value=F.prov;$('reg').value=F.reg;$('t').value=F.t||'';$('r').value=F.r||'';$('p').value=F.p||'';$('nv').value=F.nv}
+const syncInputs=build;
 const KEY={price:o=>o.price,gb:o=>o.price/o.ram,threads:o=>o.threads,ram:o=>o.ram,disk:o=>o.disk,cpu:o=>name(o).toLowerCase(),provider:o=>o.provider};
 function draw(){
- let rows=D.filter(o=>(!F.kind||(o.kind==='dedicated')===(F.kind==='dedicated'))&&(!F.prov||o.provider===F.prov)&&(!F.reg||region(o)===F.reg)&&o.threads>=F.t&&o.ram>=F.r&&(!F.p||o.price<=F.p)&&(!F.nv||o.nvme));
+ let rows=D.filter(o=>(!F.kind||(o.kind==='dedicated')===(F.kind==='dedicated'))&&(!F.prov||o.provider===F.prov)&&(!F.reg||region(o)===F.reg)&&o.threads>=F.t&&o.ram>=F.r&&(!F.p||o.price<=F.p)&&(!F.dt||(o.disk_type||(o.nvme?'nvme':''))===F.dt)&&o.disk>=F.ds);
  const key=KEY[sort]||KEY.price;rows.sort((a,b)=>(key(a)>key(b)?1:key(a)<key(b)?-1:a.price-b.price)*dir);
  $('n').textContent=rows.length+(rows.length===1?' server':' servers');$('empty').hidden=rows.length>0;$('more').hidden=rows.length<=shown;
  $('reset').hidden=!Object.values(F).some(Boolean);
@@ -192,9 +229,7 @@ function draw(){
  $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">€${o.price.toFixed(2)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  writeURL();
 }
-function setF(){F.kind=$('kind').value;F.prov=$('prov').value;F.reg=$('reg').value;F.t=+$('t').value||0;F.r=+$('r').value||0;F.p=+$('p').value||0;F.nv=$('nv').value;shown=60;draw()}
-['kind','prov','reg','t','r','p','nv'].forEach(i=>$(i).addEventListener('input',setF));
-$('reset').onclick=()=>{for(const k in F)F[k]=(k==='t'||k==='r'||k==='p')?0:'';syncInputs();shown=60;draw()};
+$('reset').onclick=()=>{for(const k in F)F[k]=NUM.includes(k)?0:'';apply()};
 $('more').onclick=()=>{shown+=60;draw()};
 document.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;dir=sort===k?-dir:1;sort=k;draw()});
 const ago=t=>{const m=Math.round((Date.now()-new Date(t))/6e4);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
@@ -210,8 +245,8 @@ fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
  $('nh').textContent=hosts.length;$('f1').textContent=D.length.toLocaleString();$('f2').textContent=eur(best(ded));$('f3').textContent=eur(best(D.filter(o=>o.threads>=8&&o.ram>=16)));$('f4').textContent=ago(d.at);
  const picks=[['Cheapest dedicated',best(ded)],['Most RAM under €100',ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
  $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">€${o.price.toFixed(2)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div><div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
- $('prov').innerHTML+=hosts.map(k=>`<option>${esc(k)}</option>`).join('');
- const regs=[...new Set(D.map(region))].sort();$('reg').innerHTML+=regs.map(k=>`<option>${esc(k)}</option>`).join('');if(regs.length<2)$('reg').parentElement.hidden=true;
+ UI.find(u=>u.id==='prov').opts=[['','All'],...hosts.map(k=>[k,k])];
+ const regs=[...new Set(D.map(region))].sort(),ru=UI.find(u=>u.id==='reg');ru.opts=[['','All'],...regs.map(k=>[k,k])];ru.hide=regs.length<2;
  const by={};D.forEach(o=>{const b=by[o.provider]??={n:0,min:1e9};b.n++;b.min=Math.min(b.min,o.price)});
  $('hosts').innerHTML=hosts.map(k=>`<button class="host" data-h="${esc(k)}"><b>${esc(k)}</b><span>${FRESH[k]===2?'no recent check':by[k]?by[k].n+' in stock · from €'+by[k].min.toFixed(2):'none in stock'}</span></button>`).join('');
  $('hosts').querySelectorAll('.host').forEach(b=>b.onclick=()=>{F.prov=b.dataset.h;syncInputs();shown=60;draw();$('all').scrollIntoView({behavior:'smooth'})});
