@@ -82,6 +82,10 @@ h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-tr
 .ddb:focus-visible,.stp button:focus-visible,.reset:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
 .bar .sp{flex:1}
 .bar .n{font-size:12.5px;color:var(--mut);padding-bottom:8px}
+.alert{height:36px;display:inline-flex;align-items:center;gap:7px;padding:0 12px;border-radius:6px;background:var(--acc);color:var(--accfg);font:500 14px Geist,sans-serif;text-decoration:none;white-space:nowrap}
+.alert:hover{filter:brightness(1.08)}
+.alert svg{width:15px;height:15px}
+.bar .n{margin-left:10px}
 .reset{font:500 13px Geist;background:none;border:0;color:var(--acc);cursor:pointer;padding:0 0 8px;text-decoration:underline}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{font:500 11px Geist;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);text-align:left;padding:10px 8px 6px;white-space:nowrap;cursor:pointer;user-select:none}
@@ -143,7 +147,7 @@ footer p{margin:4px 0}
 <div class="picks" id="picks"></div>
 
 <h2 id="all">All servers</h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
-<div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><span class="n m" id="n"></span></div>
+<div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Alert me on Telegram</span></a><span class="n m" id="n"></span></div>
 <table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th>Location</th><th>Stock</th><th class="r" data-k="price">€ / month</th><th class="r" data-k="gb">€ / GB</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
@@ -163,6 +167,7 @@ footer p{margin:4px 0}
 <footer>
  <p>Prices and plan details are quoted from each host's own website. Every row links to the source. Prices can change before you order.</p>
  <p>OVH Eco lists only servers ready in about 1 hour. Hetzner auction prices include the IPv4 address. Netcup prices are for a 12-month term.</p>
+ <p>Telegram alerts: <a href="https://t.me/DedistockBot" target="_blank" rel="noopener">@DedistockBot</a>. It keeps your chat id and your alerts. Send /stop to delete them.</p>
  <p>Dedistock does not sell servers.</p>
 </footer>
 </div>
@@ -230,6 +235,9 @@ function draw(){
  const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
  $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${o.price.toFixed(2)}</b></td><td class="r m">${(o.price/o.ram).toFixed(2)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
  $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">€${o.price.toFixed(2)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
+ // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
+ const code=(F.kind?'k'+F.kind[0]:'')+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
+ $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alertTxt').textContent=code?'Alert me on these':'Alert me on Telegram';
  writeURL();
 }
 $('reset').onclick=()=>{for(const k in F)F[k]=NUM.includes(k)?0:'';apply()};
