@@ -96,7 +96,7 @@ h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-tr
 .amenu a:hover,.amenu a:focus{background:var(--tint);outline:0}
 .amh,.amf{font-size:12px;color:var(--mut);padding:6px 10px}
 .amf{border-top:1px solid var(--line);margin-top:4px}
-.bar .n{margin-left:10px}
+.cnt{color:var(--mut);font-weight:500}
 .reset{font:500 13px Geist;background:none;border:0;color:var(--acc);cursor:pointer;padding:0 0 8px;text-decoration:underline}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{font:500 11px Geist;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);text-align:left;padding:10px 8px 6px;white-space:nowrap;cursor:pointer;user-select:none}
@@ -156,8 +156,8 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 <h2>Best value right now</h2>
 <div class="picks" id="picks"></div>
 
-<h2 id="all">All servers</h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
-<div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div><span class="n m" id="n"></span></div>
+<h2 id="all">All servers<span class="cnt m" id="cnt"></span></h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
+<div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div></div>
 <table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th>Location</th><th>Stock</th><th class="r" data-k="price">€ / month</th><th class="r" data-k="gb">€ / GB</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
@@ -197,6 +197,8 @@ const DT={nvme:' NVMe',ssd:' SSD',hdd:' HDD',mixed:' mixed'};
 const dsk=o=>o.disk?(o.disk>=1000?(o.disk/1000).toFixed(1)+' TB':o.disk+' GB')+(DT[o.disk_type]||(o.nvme?' NVMe':'')):'extra';
 const badge=o=>fresh(o)===1?'<span class="badge un">Not confirmed</span>':o.signal==='listed'?'<span class="badge ls">Listed</span>':o.signal==='indicative'?'<span class="badge lk">Likely</span>':'<span class="badge">In stock</span>';
 const region=o=>o.region||'Europe';
+const CO={'OVH Eco':'OVHcloud','OVH Bare Metal':'OVHcloud','OVH VPS':'OVHcloud','Hetzner auction':'Hetzner','Hetzner Cloud':'Hetzner','Netcup':'netcup'};
+const company=p=>CO[p]||p;const hostOk=o=>!F.prov||o.provider===F.prov||company(o.provider)===F.prov;
 // One row per plan and price: merge the locations (Hetzner Cloud and Scaleway list each city separately).
 function group(list){const m=new Map();for(const o of list){const k=[o.provider,o.name,o.cpu,o.threads,o.ram,o.disk,o.price,o.signal,o.term,region(o),o.provider==='Hetzner auction'?o.sku:''].join('|');
   const g=m.get(k);if(g){for(const w of o.where)if(!g.where.includes(w))g.where.push(w)}else m.set(k,{...o,where:[...o.where]})}return [...m.values()]}
@@ -245,9 +247,9 @@ function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entr
 const syncInputs=build;
 const KEY={price:o=>o.price,gb:o=>o.price/o.ram,threads:o=>o.threads,ram:o=>o.ram,disk:o=>o.disk,cpu:o=>name(o).toLowerCase(),provider:o=>o.provider};
 function draw(){
- let rows=D.filter(o=>(!F.kind||(o.kind==='dedicated')===(F.kind==='dedicated'))&&(!F.prov||o.provider===F.prov)&&(!F.reg||region(o)===F.reg)&&o.threads>=F.t&&o.ram>=F.r&&(!F.p||o.price<=F.p)&&(!F.dt||(o.disk_type||(o.nvme?'nvme':''))===F.dt)&&o.disk>=F.ds);
+ let rows=D.filter(o=>(!F.kind||(o.kind==='dedicated')===(F.kind==='dedicated'))&&hostOk(o)&&(!F.reg||region(o)===F.reg)&&o.threads>=F.t&&o.ram>=F.r&&(!F.p||o.price<=F.p)&&(!F.dt||(o.disk_type||(o.nvme?'nvme':''))===F.dt)&&o.disk>=F.ds);
  const key=KEY[sort]||KEY.price;rows.sort((a,b)=>(key(a)>key(b)?1:key(a)<key(b)?-1:a.price-b.price)*dir);
- $('n').textContent=rows.length+(rows.length===1?' server':' servers');$('empty').hidden=rows.length>0;$('more').hidden=rows.length<=shown;
+ $('cnt').textContent=' · '+rows.length.toLocaleString();$('empty').hidden=rows.length>0;$('more').hidden=rows.length<=shown;
  $('reset').hidden=!Object.values(F).some(Boolean);
  document.querySelectorAll('th[data-k]').forEach(th=>{th.dataset.k===sort?th.setAttribute('aria-sort',dir>0?'ascending':'descending'):th.removeAttribute('aria-sort');th.textContent=th.textContent.replace(/ [↑↓]$/,'')+(th.dataset.k===sort?(dir>0?' ↑':' ↓'):'')});
  const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
@@ -274,7 +276,7 @@ fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
  $('nh2').textContent=hosts.length;$('f1').textContent=D.length.toLocaleString();$('f2').textContent=eur(best(ded));$('f4').textContent=ago(d.at);
  const picks=[['Cheapest dedicated',best(ded)],['Most RAM under €100',ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
  $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">€${o.price.toFixed(2)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div><div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
- UI.find(u=>u.id==='prov').opts=[['','All'],...hosts.map(k=>[k,k])];
+ const cos=[...new Set(hosts.map(company))];UI.find(u=>u.id==='prov').opts=[['','All'],...cos.map(k=>[k,k])];
  const regs=[...new Set(D.map(region))].sort(),ru=UI.find(u=>u.id==='reg');ru.opts=[['','All'],...regs.map(k=>[k,k])];ru.hide=regs.length<2;
  const by={};D.forEach(o=>{const b=by[o.provider]??={n:0,min:1e9};b.n++;b.min=Math.min(b.min,o.price)});
  $('hosts').innerHTML=hosts.map(k=>`<button class="host" data-h="${esc(k)}"><b>${esc(k)}</b><span>${FRESH[k]===2?'no recent check':by[k]?by[k].n+' in stock · from €'+by[k].min.toFixed(2):'none in stock'}</span></button>`).join('');
