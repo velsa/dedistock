@@ -169,12 +169,25 @@ function render(){
     ${o.term!=='monthly'||o.setup_fee||o.note?`<span class="s" style="grid-column:1/-1">${[o.term!=='monthly'?esc(o.term)+' term':'',o.setup_fee?'setup €'+o.setup_fee:'',esc(o.note||'')].filter(Boolean).join(' · ')}</span>`:''}</a>`}).join('')
     :'<div class="empty">Nothing in stock matches right now.<br>Try a higher price or fewer threads.</div>';
   $('more').hidden=rows.length<=shown;
+  writeURL();
 }
 $('dFilter').addEventListener('close',()=>{const v=$('dFilter').returnValue;
   if(v==='reset'){Object.assign(F,{threads:0,ram:0,disk:0,max:0,kind:'',nvme:false,sold:false});preset='all'}
   else if(v==='ok'){Object.assign(F,{threads:+$('fThreads').value||0,ram:+$('fRam').value||0,disk:+$('fDisk').value||0,max:+$('fMax').value||0,kind:$('fKind').value,nvme:$('fNvme').checked,sold:$('fSold').checked});preset='custom'}
   shown=30;render()});
 $('sort').onchange=render;$('more').onclick=()=>{shown+=30;render()};
+// Filters live in the URL so a link reproduces the view (spec public-site / Shareable filters).
+const QK={threads:'t',ram:'r',disk:'d',max:'p',kind:'k',nvme:'n',sold:'s',prov:'h'};
+function readURL(){const q=new URLSearchParams(location.search);let any=false;
+  for(const [f,k] of Object.entries(QK)){if(!q.has(k))continue;any=true;const v=q.get(k);
+    F[f]=(f==='kind'||f==='prov')?v:(f==='nvme'||f==='sold')?v==='1':(+v||0)}
+  if(q.has('o')&&['price','gb','thr'].includes(q.get('o')))$('sort').value=q.get('o');
+  const pr=q.get('f');if(pr&&PRESETS.some(x=>x.id===pr))preset=pr;else if(any)preset='custom'}
+function writeURL(){const q=new URLSearchParams();
+  for(const [f,k] of Object.entries(QK)){const v=F[f];if(v===''||v===0||v===false)continue;q.set(k,v===true?'1':String(v))}
+  if($('sort').value!=='price')q.set('o',$('sort').value);if(preset!=='all'&&preset!=='custom')q.set('f',preset);
+  const u=location.pathname+(q.toString()?'?'+q:'');if(u!==location.pathname+location.search)history.replaceState(null,'',u)}
+readURL();
 fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{D=d;$('at').textContent=ago(d.at);$('at').title=new Date(d.at).toLocaleString();
   const now=Date.now(),stale=[];
   for(const [k,v] of Object.entries(d.sources)){const t=v.last_success?now-new Date(v.last_success):Infinity;FRESH[k]=t>6*H?2:t>2*H?1:0;if(FRESH[k])stale.push(k)}
