@@ -4,198 +4,216 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dedistock · dedicated servers and VPS in stock now</title>
-<meta name="description" content="Cheap dedicated servers and VPS you can order right now. OVH, Kimsufi-class Eco, Hetzner auction, Hetzner Cloud and Netcup stock, checked every 30 minutes. EU only.">
-<meta property="og:title" content="Dedistock · servers in stock now">
-<meta property="og:description" content="Dedicated servers and VPS you can really order today, checked every 30 minutes.">
+<meta name="description" content="Dedicated servers and VPS you can order today. Stock and prices from OVH, Hetzner, Leaseweb, Scaleway, Netcup, IONOS and Worldstream, checked every 30 minutes.">
+<meta property="og:title" content="Dedistock · servers you can order today">
+<meta property="og:description" content="Cheap servers sell out in hours. We check the hosts every 30 minutes and list only what is in stock.">
 <meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231e4d3b'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23f4f1ea' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f5f1;--fg:#16171a;--muted:#6b6e75;--line:#e4e2db;--card:#fff;--soft:#efede7;--acc:#0f766e;--acc-soft:#dff1ee;--in:#15803d;--shadow:0 1px 2px rgba(0,0,0,.05)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111214;--fg:#ececea;--muted:#9a9da4;--line:#2a2c31;--card:#191a1d;--soft:#222429;--acc:#2dd4bf;--acc-soft:#10302b;--in:#4ade80;--shadow:none}}
-:root[data-theme="dark"]{--bg:#111214;--fg:#ececea;--muted:#9a9da4;--line:#2a2c31;--card:#191a1d;--soft:#222429;--acc:#2dd4bf;--acc-soft:#10302b;--in:#4ade80;--shadow:none}
+:root{--bg:#f4f1ea;--fg:#1b1a17;--mut:#6f6b62;--line:#ddd7ca;--card:#fbf9f4;--acc:#1e4d3b;--accfg:#f4f1ea;--tint:#e3ecdf;--amb:#8a5a00;--down:#a3271d;--warnbg:#fbeecb;--warnfg:#5f4300}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141513;--fg:#ecebe5;--mut:#9a978d;--line:#2c2e2a;--card:#1b1d1a;--acc:#9fd3b4;--accfg:#12140f;--tint:#1e2a22;--amb:#e6b450;--down:#ff8478;--warnbg:#33290d;--warnfg:#f3d98b}}
+:root[data-theme="dark"]{--bg:#141513;--fg:#ecebe5;--mut:#9a978d;--line:#2c2e2a;--card:#1b1d1a;--acc:#9fd3b4;--accfg:#12140f;--tint:#1e2a22;--amb:#e6b450;--down:#ff8478;--warnbg:#33290d;--warnfg:#f3d98b}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 Inter,system-ui,sans-serif;-webkit-text-size-adjust:100%}
-button{font:inherit;color:inherit}
-.wrap{max-width:760px;margin:0 auto;padding:0 16px 40px}
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 0 6px}
-h1{font-size:22px;margin:0;letter-spacing:-.01em}
-.lede{margin:0 0 4px;font-size:14.5px}
-.sub{font-size:13px;color:var(--muted)}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--in);margin-right:5px;vertical-align:1px}
-.icon{width:36px;height:36px;border:1px solid var(--line);background:var(--card);border-radius:10px;display:grid;place-items:center;cursor:pointer}
-.icon svg{width:18px;height:18px}
-.top{position:sticky;top:0;z-index:10;background:var(--bg);padding:10px 0 4px}
-.provs{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 10px;scrollbar-width:none;margin:0 -16px}
-.provs::-webkit-scrollbar{display:none}
-.prov{flex:0 0 auto;min-width:118px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer}
-.prov[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-soft)}
-.prov b{display:block;font-size:13px}
-.prov .n{font-size:20px;font-weight:700;line-height:1.2}
-.prov .n small{font-size:12px;font-weight:500;color:var(--muted)}
-.prov .from{font-size:12px;color:var(--muted)}
-.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
-.chips::-webkit-scrollbar{display:none}
-.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:500;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.chip.ghost{display:flex;align-items:center;gap:5px}
-.meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin:8px 0 6px}
-.meta select{border:0;background:none;color:var(--fg);font:600 13px Inter;cursor:pointer}
-.list{display:grid;gap:6px}
-.row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:inherit;text-decoration:none}
-.row.out{opacity:.5}
-.row .t{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .p{font-weight:700;font-size:16px;text-align:right;white-space:nowrap}
-.row .s{font:500 12.5px "JetBrains Mono",monospace;color:var(--muted)}
-.row .w{font-size:12px;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
-.row .w.in{color:var(--in);font-weight:600}
-.row .w.unc{color:var(--muted);font-weight:500}
-.lbl{font:600 10.5px Inter;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:1px}
-.banner{background:#fef3c7;color:#78350f;border-radius:10px;padding:8px 12px;font-size:13.5px;margin:6px 0}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .banner{background:#3a2a0a;color:#fde68a}}
-.empty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
-.more{display:block;margin:10px auto 0;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 16px;cursor:pointer}
-footer{margin-top:28px;border-top:1px solid var(--line);padding-top:14px;font-size:13px;color:var(--muted)}
-footer ul{margin:6px 0 10px;padding-left:18px}
-footer p{margin:6px 0}
-dialog{border:0;border-radius:18px 18px 0 0;padding:0;width:100%;max-width:560px;margin:auto auto 0;background:var(--card);color:var(--fg)}
-@media (min-width:600px){dialog{border-radius:18px;margin:auto}}
-dialog::backdrop{background:rgba(0,0,0,.4)}
-.sheet{padding:18px 16px calc(16px + env(safe-area-inset-bottom))}
-.sheet h2{font-size:18px;margin:0 0 12px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fld label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px}
-.fld input,.fld select{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
-.fld.full{grid-column:1/-1}
-.chk{display:flex;align-items:center;gap:8px;grid-column:1/-1;font-size:14px}
-.acts{display:flex;gap:8px;margin-top:16px}
-.acts button{flex:1;padding:11px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:600;cursor:pointer}
-.acts .pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 [hidden]{display:none!important}
-
-/* iOS Safari zooms into any input/select under 16px on focus. Keep form controls at 16px. */
-input,select,textarea{font-size:16px!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 Geist,system-ui,sans-serif}
+.m{font-family:"Geist Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px 64px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
+.brand{font:600 20px Fraunces,serif;letter-spacing:-.01em;text-decoration:none}
+.brand span{color:var(--acc)}
+.icon{width:36px;height:36px;border:1px solid var(--line);background:none;border-radius:99px;color:var(--fg);display:grid;place-items:center;cursor:pointer}
+.icon svg{width:17px;height:17px}
+h1{font:500 clamp(30px,6vw,48px)/1.05 Fraunces,serif;letter-spacing:-.02em;margin:18px 0 10px;max-width:17ch}
+h1 em{font-style:normal;color:var(--acc)}
+.lede{color:var(--mut);max-width:54ch;margin:0 0 20px}
+.banner{background:var(--warnbg);color:var(--warnfg);border-radius:10px;padding:9px 12px;font-size:14px;margin:0 0 14px}
+.facts{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:8px 36px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fact b{display:block;font:500 24px/1.15 Fraunces,serif}
+.fact span{font-size:13px;color:var(--mut)}
+.tape{display:flex;gap:26px;overflow-x:auto;white-space:nowrap;padding:9px 0;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--mut);scrollbar-width:none}
+.tape::-webkit-scrollbar{display:none}
+.tape b{font-weight:500}.tape .up{color:var(--acc)}.tape .down{color:var(--down)}.tape .amb{color:var(--amb)}
+h2{font:500 21px Fraunces,serif;margin:30px 0 2px;letter-spacing:-.01em}
+.h2s{color:var(--mut);font-size:14px;margin:0 0 12px}
+.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.pick{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none;display:block}
+.pick:hover{border-color:var(--acc)}
+.pick .tag{font-size:12px;font-weight:600;color:var(--acc);letter-spacing:.04em;text-transform:uppercase}
+.pick .pr{font:500 28px/1.15 Fraunces,serif;margin:4px 0 2px}
+.pick .pr small{font:400 13px Geist;color:var(--mut)}
+.pick .nm{font-weight:600}
+.pick .sp{font-size:14px;color:var(--mut)}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:10px 0;border-bottom:1px solid var(--fg)}
+.bar label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);display:flex;flex-direction:column;gap:3px}
+.bar select,.bar input{font:500 16px "Geist Mono",monospace;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0;height:36px}
+.bar input{width:78px}
+.bar .sp{flex:1}
+.bar .n{font-size:12.5px;color:var(--mut);padding-bottom:8px}
+.reset{font:500 13px Geist;background:none;border:0;color:var(--acc);cursor:pointer;padding:0 0 8px;text-decoration:underline}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font:500 11px Geist;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);text-align:left;padding:10px 8px 6px;white-space:nowrap;cursor:pointer;user-select:none}
+th[aria-sort]{color:var(--fg)}
+th.r,td.r{text-align:right}
+td{padding:8px;border-top:1px solid var(--line);white-space:nowrap;vertical-align:top}
+tbody tr:hover td{background:var(--card)}
+td.cpu{white-space:normal;min-width:170px}
+td.cpu b{font-weight:600}
+td small,.c small{display:block;color:var(--mut);font-size:12.5px}
+td.loc{white-space:normal;max-width:180px;color:var(--mut);font-size:13px}
+.badge{font-size:11.5px;font-weight:600;border-radius:99px;padding:1px 8px;background:var(--tint);color:var(--acc);white-space:nowrap}
+.badge.lk{background:none;border:1px solid var(--line);color:var(--amb)}
+.badge.ls,.badge.un{background:none;border:1px solid var(--line);color:var(--mut)}
+.go{color:var(--acc);font-weight:500;text-decoration:none;white-space:nowrap}
+.go:hover{text-decoration:underline}
+.cards{display:none}
+.empty{padding:28px 0;color:var(--mut)}
+.more{margin:14px 0 0;font:500 14px Geist;background:none;border:1px solid var(--line);color:var(--fg);border-radius:99px;padding:8px 16px;cursor:pointer}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.hosts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.host{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.host:hover{border-color:var(--acc)}
+.host b{display:block;font-weight:600;font-size:14.5px}
+.host span{font-size:12.5px;color:var(--mut)}
+.how{font-size:15px;color:var(--mut)}
+.how dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:baseline}
+.how dd{margin:0}
+footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
+footer p{margin:4px 0}
+@media (max-width:760px){
+ .wrap{padding:0 16px 56px}
+ .facts{grid-template-columns:1fr 1fr;gap:12px 20px}
+ .cols{grid-template-columns:1fr;gap:0}
+ table{display:none}.cards{display:block}
+ .c{display:grid;grid-template-columns:1fr auto;gap:1px 12px;padding:11px 0;border-top:1px solid var(--line);text-decoration:none}
+ .c .t{font-weight:600}.c .p{font:500 16px "Geist Mono",monospace;text-align:right}
+ .c .s{font:400 12.5px "Geist Mono",monospace;color:var(--mut)}.c .w{font-size:12.5px;text-align:right;color:var(--mut)}
+ .c .x{grid-column:1/-1;font-size:12.5px;color:var(--mut)}
+ .bar input{width:68px}
+}
 </style>
 </head>
-<body>
-<div class="wrap">
-  <header>
-    <div><h1>Dedistock</h1><div class="sub"><span class="dot"></span><span id="at">…</span> · EU · €/month excl. VAT</div></div>
-    <button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
-  </header>
-  <p class="lede">Dedicated servers and VPS you can order right now.</p>
-  <div class="banner" id="banner" hidden></div>
+<body><div class="wrap">
+<nav><a class="brand" href="./">dedi<span>stock</span></a>
+ <button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></nav>
 
-  <div class="top">
-    <div class="provs" id="provs"></div>
-    <div class="chips" id="chips"></div>
-  </div>
-  <div class="meta"><span id="count"></span>
-    <label>Sort <select id="sort"><option value="price">price</option><option value="gb">€ per GB RAM</option><option value="thr">€ per thread</option></select></label></div>
-  <div class="list" id="list"></div>
-  <button class="more" id="more" hidden>Show more</button>
+<h1>Servers you can <em>order today</em>.</h1>
+<p class="lede">Cheap servers sell out in hours. We check <span id="nh">the</span> hosts every 30 minutes and list only what is in stock, at the price you pay per month.</p>
+<div class="banner" id="banner" hidden></div>
+<div class="facts">
+ <div class="fact"><b id="f1">–</b><span>orderable now</span></div>
+ <div class="fact"><b id="f2">–</b><span>cheapest dedicated</span></div>
+ <div class="fact"><b id="f3">–</b><span>cheapest 8 threads, 16 GB</span></div>
+ <div class="fact"><b id="f4">–</b><span>last check</span></div>
+</div>
+<div class="tape m" id="tape" hidden></div>
 
-  <footer>
-    <b>Sources</b>, checked every 30 minutes:
-    <ul id="sources"></ul>
-    <p>OVH Eco lists only servers that OVH marks "ready in about 1 hour". <b>likely</b> = the host's API says available, without a guarantee. <b>listed</b> = on the host's price page; the host gives no stock signal. Hetzner auction prices include the IPv4 address. Netcup prices are for a 12-month term.</p>
-    <p>Prices and plan details are quoted from each host's own website (for example netcup.com, ovhcloud.com, hetzner.com) and every row links to the source.</p>
-    <p>Prices can change before you order. Always check the host's page. We do not sell servers. Links go straight to the host.</p>
-    <p>Telegram alerts: coming soon.</p>
-  </footer>
+<h2>Best value right now</h2><p class="h2s">Among servers a host confirms as in stock.</p>
+<div class="picks" id="picks"></div>
+
+<h2 id="all">All servers</h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
+<div class="bar">
+ <label>Type<select id="kind"><option value="">All</option><option value="dedicated">Dedicated</option><option value="vps">VPS</option></select></label>
+ <label>Host<select id="prov"><option value="">All</option></select></label>
+ <label>Region<select id="reg"><option value="">All</option></select></label>
+ <label>Threads ≥<input id="t" type="number" min="0" inputmode="numeric" placeholder="any"></label>
+ <label>RAM ≥ GB<input id="r" type="number" min="0" inputmode="numeric" placeholder="any"></label>
+ <label>€ ≤<input id="p" type="number" min="0" inputmode="decimal" placeholder="any"></label>
+ <label>Disk<select id="nv"><option value="">Any</option><option value="1">NVMe</option></select></label>
+ <button class="reset" id="reset" hidden>Reset</button>
+ <span class="sp"></span><span class="n m" id="n"></span>
+</div>
+<table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th>Location</th><th>Stock</th><th class="r" data-k="price">€ / month</th><th class="r" data-k="gb">€ / GB</th><th></th></tr></thead><tbody id="tb"></tbody></table>
+<div class="cards" id="cards"></div>
+<div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
+<button class="more" id="more" hidden>Show more</button>
+
+<div class="cols">
+ <div><h2>Hosts we check</h2><p class="h2s">In stock now, and the lowest price. Tap to filter.</p><div class="hosts" id="hosts"></div></div>
+ <div><h2>How to read the stock label</h2><p class="h2s">Hosts tell us different things.</p>
+  <div class="how"><dl>
+   <dt><span class="badge">In stock</span></dt><dd>The host's stock system says you can order now.</dd>
+   <dt><span class="badge lk">Likely</span></dt><dd>The host says available, with no guarantee.</dd>
+   <dt><span class="badge ls">Listed</span></dt><dd>On the host's price page. The host gives no stock signal.</dd>
+   <dt><span class="badge un">Not confirmed</span></dt><dd>Our last good check of this host is over 2 hours old.</dd>
+  </dl></div></div>
 </div>
 
-<dialog id="dFilter"><form class="sheet" method="dialog">
-  <h2>Filters</h2>
-  <div class="grid">
-    <div class="fld"><label for="fThreads">Min threads</label><input id="fThreads" type="number" min="0" inputmode="numeric"></div>
-    <div class="fld"><label for="fRam">Min RAM, GB</label><input id="fRam" type="number" min="0" inputmode="numeric"></div>
-    <div class="fld"><label for="fDisk">Min disk, GB</label><input id="fDisk" type="number" min="0" inputmode="numeric"></div>
-    <div class="fld"><label for="fMax">Max €/month</label><input id="fMax" type="number" min="0" inputmode="decimal"></div>
-    <div class="fld full"><label for="fKind">Type</label><select id="fKind"><option value="">Dedicated and VPS</option><option value="dedicated">Dedicated only</option><option value="vps">VPS only</option></select></div>
-    <label class="chk"><input type="checkbox" id="fNvme"> NVMe only</label>
-    <label class="chk"><input type="checkbox" id="fSold"> Show sold-out plans</label>
-  </div>
-  <div class="acts"><button value="reset">Reset</button><button class="pri" value="ok">Show results</button></div>
-</form></dialog>
-
+<footer>
+ <p>Prices and plan details are quoted from each host's own website. Every row links to the source. Prices can change before you order.</p>
+ <p>OVH Eco lists only servers ready in about 1 hour. Hetzner auction prices include the IPv4 address. Netcup prices are for a 12-month term.</p>
+ <p>Dedistock does not sell servers.</p>
+</footer>
+</div>
 <script>
 (function(){
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-const t0=store.get('ds-theme',null); if(t0)document.documentElement.dataset.theme=t0;
-$('theme').onclick=()=>{const dark=matchMedia('(prefers-color-scheme: dark)').matches;const cur=document.documentElement.dataset.theme||(dark?'dark':'light');const n=cur==='dark'?'light':'dark';document.documentElement.dataset.theme=n;store.set('ds-theme',n)};
+const $=i=>document.getElementById(i),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const t0=store.get('ds-theme');if(t0)document.documentElement.dataset.theme=t0;
+$('theme').onclick=()=>{const d=matchMedia('(prefers-color-scheme: dark)').matches,c=document.documentElement.dataset.theme||(d?'dark':'light'),n=c==='dark'?'light':'dark';document.documentElement.dataset.theme=n;store.set('ds-theme',n)};
 
-let D={offers:[],sources:{}},shown=30;
-const F={threads:0,ram:0,disk:0,max:0,kind:'',nvme:false,sold:false,prov:''};
-const PRESETS=[{id:'all',label:'All',f:{}},{id:'ci',label:'8 threads · 16GB · ≤€30',f:{threads:8,ram:16,max:30}},
-  {id:'big',label:'128GB+ NVMe',f:{ram:128,nvme:true,kind:'dedicated'}},{id:'ded',label:'Dedicated ≤€60',f:{kind:'dedicated',max:60}},{id:'cheap',label:'Under €20',f:{max:20}}];
-let preset='all';
-// Freshness per source (spec public-site): > 2 h since last success = "not confirmed", > 6 h = hidden from in-stock lists.
-const H=3600e3;let FRESH={};
-function fresh(o){const f=FRESH[o.provider];return f===undefined?2:f}   // 0 fresh, 1 not confirmed, 2 too old
-function inStock(o){return o.stock==='in'&&fresh(o)<2}
-function matches(o){
-  if(F.kind&&(o.kind==='dedicated')!==(F.kind==='dedicated'))return false;
-  if(o.threads<F.threads||o.ram<F.ram||o.disk<F.disk)return false;
-  if(F.max&&o.price>F.max)return false;
-  if(F.nvme&&!o.nvme)return false;
-  return (F.sold||inStock(o))&&(!F.prov||o.provider===F.prov);
+const H=3600e3;let D=[],FRESH={},sort='price',dir=1,shown=60;
+const fresh=o=>FRESH[o.provider]??2;                 // 0 fresh, 1 not confirmed (>2 h), 2 too old (>6 h)
+const name=o=>o.kind==='dedicated'?o.cpu.replace(/^(Intel|AMD)\s+/,''):o.name.replace(/ G[\d.]+$/,'');
+const sub=o=>(o.kind==='dedicated'?o.name:o.cpu)+(o.term!=='monthly'?' · '+o.term+' term':'')+(o.setup_fee?' · setup €'+o.setup_fee:'');
+const dsk=o=>o.disk?(o.disk>=1000?(o.disk/1000).toFixed(1)+' TB':o.disk+' GB')+(o.nvme?' NVMe':''):'extra';
+const badge=o=>fresh(o)===1?'<span class="badge un">Not confirmed</span>':o.signal==='listed'?'<span class="badge ls">Listed</span>':o.signal==='indicative'?'<span class="badge lk">Likely</span>':'<span class="badge">In stock</span>';
+const region=o=>o.region||'Europe';
+// One row per plan and price: merge the locations (Hetzner Cloud and Scaleway list each city separately).
+function group(list){const m=new Map();for(const o of list){const k=[o.provider,o.name,o.cpu,o.threads,o.ram,o.disk,o.price,o.signal,o.term,region(o),o.provider==='Hetzner auction'?o.sku:''].join('|');
+  const g=m.get(k);if(g){for(const w of o.where)if(!g.where.includes(w))g.where.push(w)}else m.set(k,{...o,where:[...o.where]})}return [...m.values()]}
+
+const F={kind:'',prov:'',reg:'',t:0,r:0,p:0,nv:''},QK={kind:'k',prov:'h',reg:'g',t:'t',r:'r',p:'p',nv:'n'};
+function readURL(){const q=new URLSearchParams(location.search);for(const [f,k] of Object.entries(QK))if(q.has(k))F[f]=(f==='t'||f==='r'||f==='p')?(+q.get(k)||0):q.get(k);
+ if(q.get('o')){sort=q.get('o');dir=q.get('d')==='desc'?-1:1}}
+function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}
+ const u=location.pathname+(q.toString()?'?'+q:'');if(u!==location.pathname+location.search)history.replaceState(null,'',u)}
+function syncInputs(){$('kind').value=F.kind;$('prov').value=F.prov;$('reg').value=F.reg;$('t').value=F.t||'';$('r').value=F.r||'';$('p').value=F.p||'';$('nv').value=F.nv}
+const KEY={price:o=>o.price,gb:o=>o.price/o.ram,threads:o=>o.threads,ram:o=>o.ram,disk:o=>o.disk,cpu:o=>name(o).toLowerCase(),provider:o=>o.provider};
+function draw(){
+ let rows=D.filter(o=>(!F.kind||(o.kind==='dedicated')===(F.kind==='dedicated'))&&(!F.prov||o.provider===F.prov)&&(!F.reg||region(o)===F.reg)&&o.threads>=F.t&&o.ram>=F.r&&(!F.p||o.price<=F.p)&&(!F.nv||o.nvme));
+ const key=KEY[sort]||KEY.price;rows.sort((a,b)=>(key(a)>key(b)?1:key(a)<key(b)?-1:a.price-b.price)*dir);
+ $('n').textContent=rows.length+(rows.length===1?' server':' servers');$('empty').hidden=rows.length>0;$('more').hidden=rows.length<=shown;
+ $('reset').hidden=!Object.values(F).some(Boolean);
+ document.querySelectorAll('th[data-k]').forEach(th=>{th.dataset.k===sort?th.setAttribute('aria-sort',dir>0?'ascending':'descending'):th.removeAttribute('aria-sort');th.textContent=th.textContent.replace(/ [↑↓]$/,'')+(th.dataset.k===sort?(dir>0?' ↑':' ↓'):'')});
+ const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
+ $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${o.price.toFixed(2)}</b></td><td class="r m">${(o.price/o.ram).toFixed(2)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
+ $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">€${o.price.toFixed(2)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
+ writeURL();
 }
-function title(o){if(o.kind==='dedicated')return o.cpu.replace(/^(Intel|AMD)\s+/,'');return `${o.provider.split(' ')[0]} ${o.name.replace(/ G[\d.]+$/,'')}`+(o.cpu.includes('dedicated')?' · dedicated cores':/^VPS/.test(o.name)?'':' · VPS')}
-function ago(iso){const m=Math.round((Date.now()-new Date(iso))/60000);return m<1?'checked just now':m<60?`checked ${m} min ago`:m<1440?`checked ${Math.round(m/60)} h ago`:'data is old'}
-function renderProvs(){
-  const by={};D.offers.forEach(o=>{const b=by[o.provider]??={in:0,out:0,min:1e9};inStock(o)?(b.in++,b.min=Math.min(b.min,o.price)):b.out++});
-  $('provs').innerHTML=Object.entries(by).sort((a,b)=>b[1].in-a[1].in).map(([k,v])=>`<button class="prov" aria-pressed="${F.prov===k}" data-p="${esc(k)}"><b>${esc(k)}</b><div class="n">${v.in}${v.out?` <small>/ ${v.in+v.out}</small>`:''}</div><div class="from">${v.in?'from €'+v.min.toFixed(2):'all sold out'}</div></button>`).join('');
-  $('provs').querySelectorAll('.prov').forEach(b=>b.onclick=()=>{F.prov=F.prov===b.dataset.p?'':b.dataset.p;shown=30;render()});
-}
-function renderChips(){
-  const custom=preset==='custom';
-  $('chips').innerHTML=PRESETS.map(p=>`<button class="chip" aria-pressed="${preset===p.id}" data-id="${p.id}">${esc(p.label)}</button>`).join('')+
-    `<button class="chip ghost" aria-pressed="${custom}" id="openF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>${custom?'Custom':'Filters'}</button>`;
-  $('chips').querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{preset=b.dataset.id;Object.assign(F,{threads:0,ram:0,disk:0,max:0,kind:'',nvme:false},PRESETS.find(p=>p.id===preset).f);shown=30;render()});
-  $('openF').onclick=()=>{$('fThreads').value=F.threads||'';$('fRam').value=F.ram||'';$('fDisk').value=F.disk||'';$('fMax').value=F.max||'';$('fKind').value=F.kind;$('fNvme').checked=F.nvme;$('fSold').checked=F.sold;$('dFilter').showModal()};
-}
-function render(){
-  renderProvs();renderChips();
-  const key={price:o=>o.price,gb:o=>o.price/o.ram,thr:o=>o.price/o.threads}[$('sort').value];
-  const rows=D.offers.filter(matches).sort((a,b)=>(inStock(a)===inStock(b)?0:inStock(a)?-1:1)||key(a)-key(b));
-  $('count').textContent=`${rows.filter(inStock).length} in stock`+(F.prov?` at ${F.prov}`:'');
-  $('list').innerHTML=rows.length?rows.slice(0,shown).map(o=>{const ok=inStock(o),unc=ok&&fresh(o)===1;return `<a class="row ${ok?'in':'out'}" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">
-    <span class="t">${esc(title(o))}${o.signal==='listed'?'<span class="lbl" title="Listed on the host page. The host gives no stock signal.">listed</span>':o.signal==='indicative'?'<span class="lbl" title="The host API says available, without a guarantee.">likely</span>':''}</span><span class="p">€${o.price.toFixed(2)}</span>
-    <span class="s">${o.threads}t · ${o.ram}GB · ${o.disk>=1000?(o.disk/1000).toFixed(1)+'TB':o.disk+'GB'}${o.nvme?' NVMe':''}</span>
-    <span class="w ${unc?'unc':ok?'in':'out'}" title="${esc((o.where||[]).join(', '))}">${unc?'not confirmed':ok?esc(o.provider.split(' ')[0])+' · '+esc((o.where||[])[0]||''):(o.stock==='in'?'stock unknown':'sold out')}</span>
-    ${o.term!=='monthly'||o.setup_fee||o.note?`<span class="s" style="grid-column:1/-1">${[o.term!=='monthly'?esc(o.term)+' term':'',o.setup_fee?'setup €'+o.setup_fee:'',esc(o.note||'')].filter(Boolean).join(' · ')}</span>`:''}</a>`}).join('')
-    :'<div class="empty">Nothing in stock matches right now.<br>Try a higher price or fewer threads.</div>';
-  $('more').hidden=rows.length<=shown;
-  writeURL();
-}
-$('dFilter').addEventListener('close',()=>{const v=$('dFilter').returnValue;
-  if(v==='reset'){Object.assign(F,{threads:0,ram:0,disk:0,max:0,kind:'',nvme:false,sold:false});preset='all'}
-  else if(v==='ok'){Object.assign(F,{threads:+$('fThreads').value||0,ram:+$('fRam').value||0,disk:+$('fDisk').value||0,max:+$('fMax').value||0,kind:$('fKind').value,nvme:$('fNvme').checked,sold:$('fSold').checked});preset='custom'}
-  shown=30;render()});
-$('sort').onchange=render;$('more').onclick=()=>{shown+=30;render()};
-// Filters live in the URL so a link reproduces the view (spec public-site / Shareable filters).
-const QK={threads:'t',ram:'r',disk:'d',max:'p',kind:'k',nvme:'n',sold:'s',prov:'h'};
-function readURL(){const q=new URLSearchParams(location.search);let any=false;
-  for(const [f,k] of Object.entries(QK)){if(!q.has(k))continue;any=true;const v=q.get(k);
-    F[f]=(f==='kind'||f==='prov')?v:(f==='nvme'||f==='sold')?v==='1':(+v||0)}
-  if(q.has('o')&&['price','gb','thr'].includes(q.get('o')))$('sort').value=q.get('o');
-  const pr=q.get('f');if(pr&&PRESETS.some(x=>x.id===pr))preset=pr;else if(any)preset='custom'}
-function writeURL(){const q=new URLSearchParams();
-  for(const [f,k] of Object.entries(QK)){const v=F[f];if(v===''||v===0||v===false)continue;q.set(k,v===true?'1':String(v))}
-  if($('sort').value!=='price')q.set('o',$('sort').value);if(preset!=='all'&&preset!=='custom')q.set('f',preset);
-  const u=location.pathname+(q.toString()?'?'+q:'');if(u!==location.pathname+location.search)history.replaceState(null,'',u)}
-readURL();
-fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{D=d;$('at').textContent=ago(d.at);$('at').title=new Date(d.at).toLocaleString();
-  const now=Date.now(),stale=[];
-  for(const [k,v] of Object.entries(d.sources)){const t=v.last_success?now-new Date(v.last_success):Infinity;FRESH[k]=t>6*H?2:t>2*H?1:0;if(FRESH[k])stale.push(k)}
-  if(now-new Date(d.at)>2*H){$('banner').hidden=false;$('banner').textContent=`This data is from ${new Date(d.at).toLocaleString()}. Stock may have changed.`}
-  else if(stale.length){$('banner').hidden=false;$('banner').textContent=`Not confirmed right now: ${stale.join(', ')}. Their last good check was over 2 hours ago.`}
-  $('sources').innerHTML=Object.entries(d.sources).map(([k,v])=>`<li>${esc(k)}: ${v.state==='ok'||v.state==='partial'?'ok':esc(v.state)}${v.last_success?', last good check '+esc(ago(v.last_success).replace('checked ','')):''}</li>`).join('');render()})
-  .catch(()=>{$('list').innerHTML='<div class="empty">Could not load stock data.</div>'});
+function setF(){F.kind=$('kind').value;F.prov=$('prov').value;F.reg=$('reg').value;F.t=+$('t').value||0;F.r=+$('r').value||0;F.p=+$('p').value||0;F.nv=$('nv').value;shown=60;draw()}
+['kind','prov','reg','t','r','p','nv'].forEach(i=>$(i).addEventListener('input',setF));
+$('reset').onclick=()=>{for(const k in F)F[k]=(k==='t'||k==='r'||k==='p')?0:'';syncInputs();shown=60;draw()};
+$('more').onclick=()=>{shown+=60;draw()};
+document.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;dir=sort===k?-dir:1;sort=k;draw()});
+const ago=t=>{const m=Math.round((Date.now()-new Date(t))/6e4);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
+
+fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+ const now=Date.now(),stale=[];
+ for(const [k,v] of Object.entries(d.sources)){const t=v.last_success?now-new Date(v.last_success):Infinity;FRESH[k]=t>6*H?2:t>2*H?1:0;if(FRESH[k])stale.push(k)}
+ if(now-new Date(d.at)>2*H){$('banner').hidden=false;$('banner').textContent=`This data is from ${new Date(d.at).toLocaleString()}. Stock may have changed since then.`}
+ else if(stale.length){$('banner').hidden=false;$('banner').textContent=`Not confirmed right now: ${stale.join(', ')}. The last good check was over 2 hours ago.`}
+ D=group(d.offers.filter(o=>o.stock==='in'&&fresh(o)<2));
+ const hosts=Object.keys(d.sources),best=a=>[...a].sort((x,y)=>x.price-y.price)[0],eur=o=>o?'€'+o.price.toFixed(2):'–';
+ const sure=D.filter(o=>o.signal==='verified'&&fresh(o)===0),ded=sure.filter(o=>o.kind==='dedicated');
+ $('nh').textContent=hosts.length;$('f1').textContent=D.length.toLocaleString();$('f2').textContent=eur(best(ded));$('f3').textContent=eur(best(D.filter(o=>o.threads>=8&&o.ram>=16)));$('f4').textContent=ago(d.at);
+ const picks=[['Cheapest dedicated',best(ded)],['Most RAM under €100',ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
+ $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">€${o.price.toFixed(2)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div><div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
+ $('prov').innerHTML+=hosts.map(k=>`<option>${esc(k)}</option>`).join('');
+ const regs=[...new Set(D.map(region))].sort();$('reg').innerHTML+=regs.map(k=>`<option>${esc(k)}</option>`).join('');if(regs.length<2)$('reg').parentElement.hidden=true;
+ const by={};D.forEach(o=>{const b=by[o.provider]??={n:0,min:1e9};b.n++;b.min=Math.min(b.min,o.price)});
+ $('hosts').innerHTML=hosts.map(k=>`<button class="host" data-h="${esc(k)}"><b>${esc(k)}</b><span>${FRESH[k]===2?'no recent check':by[k]?by[k].n+' in stock · from €'+by[k].min.toFixed(2):'none in stock'}</span></button>`).join('');
+ $('hosts').querySelectorAll('.host').forEach(b=>b.onclick=()=>{F.prov=b.dataset.h;syncInputs();shown=60;draw();$('all').scrollIntoView({behavior:'smooth'})});
+ readURL();syncInputs();draw();
+}).catch(()=>{$('empty').hidden=false;$('empty').textContent='Could not load stock data. Reload the page.'});
+
+fetch('events.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(ev=>{if(!ev.length)return;
+ const lab={sold_out:['down','Sold out'],appeared:['up','New'],restocked:['up','Back'],price_changed:['amb','Price']};
+ $('tape').hidden=false;$('tape').innerHTML=ev.filter(e=>lab[e.type]).map(e=>{const [c,l]=lab[e.type],n=e.kind==='dedicated'?e.cpu.replace(/^(Intel|AMD)\s+/,''):e.name;
+  const pr=e.type==='price_changed'?`€${e.old_price} → €${e.new_price}`:'€'+(e.new_price??e.old_price);return `<span><b class="${c}">${l}</b> ${esc(n)} ${e.ram}GB · ${esc(e.provider)} · ${pr} · ${ago(e.at)}</span>`}).join('')}).catch(()=>{});
 })();
 </script>
-</body>
-</html>
+</body></html>
