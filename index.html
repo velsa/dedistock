@@ -8,13 +8,13 @@
 <meta property="og:title" content="Dedistock · servers you can order today">
 <meta property="og:description" content="Cheap servers sell out in hours. We check the hosts every 10 minutes and list only what is in stock.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231e4d3b'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23f4f1ea' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a6b45'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23ffffff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f1ea;--fg:#1b1a17;--mut:#6f6b62;--line:#ddd7ca;--card:#fbf9f4;--acc:#1e4d3b;--accfg:#f4f1ea;--tint:#e3ecdf;--amb:#8a5a00;--down:#a3271d;--warnbg:#fbeecb;--warnfg:#5f4300}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141513;--fg:#ecebe5;--mut:#9a978d;--line:#2c2e2a;--card:#1b1d1a;--acc:#9fd3b4;--accfg:#12140f;--tint:#1e2a22;--amb:#e6b450;--down:#ff8478;--warnbg:#33290d;--warnfg:#f3d98b}}
-:root[data-theme="dark"]{--bg:#141513;--fg:#ecebe5;--mut:#9a978d;--line:#2c2e2a;--card:#1b1d1a;--acc:#9fd3b4;--accfg:#12140f;--tint:#1e2a22;--amb:#e6b450;--down:#ff8478;--warnbg:#33290d;--warnfg:#f3d98b}
+:root{--bg:#f6f6f3;--fg:#141615;--mut:#666b68;--line:#dfe0db;--card:#fff;--acc:#0a6b45;--accfg:#fff;--tint:#e2f1e9;--amb:#8a5a00;--down:#b3261e;--warnbg:#fbeecb;--warnfg:#5f4300}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0e0d;--fg:#e8eae8;--mut:#8b918d;--line:#222725;--card:#131615;--acc:#4fd69b;--accfg:#06120c;--tint:#12261c;--amb:#e6b450;--down:#ff7d70;--warnbg:#33290d;--warnfg:#f3d98b}}
+:root[data-theme="dark"]{--bg:#0c0e0d;--fg:#e8eae8;--mut:#8b918d;--line:#222725;--card:#131615;--acc:#4fd69b;--accfg:#06120c;--tint:#12261c;--amb:#e6b450;--down:#ff7d70;--warnbg:#33290d;--warnfg:#f3d98b}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
@@ -23,33 +23,41 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 Geist,system-ui
 a{color:inherit}
 .wrap{max-width:1040px;margin:0 auto;padding:0 20px 64px}
 nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
-.brand{font:600 20px Fraunces,serif;letter-spacing:-.01em;text-decoration:none}
+.brand{font:600 15px "Geist Mono",monospace;letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
 .brand span{color:var(--acc)}
-.icon{width:36px;height:36px;border:1px solid var(--line);background:none;border-radius:99px;color:var(--fg);display:grid;place-items:center;cursor:pointer}
+.icon{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:6px;color:var(--fg);display:grid;place-items:center;cursor:pointer}
 .icon svg{width:17px;height:17px}
-h1{font:500 clamp(30px,6vw,48px)/1.05 Fraunces,serif;letter-spacing:-.02em;margin:18px 0 10px;max-width:17ch}
+h1{font:600 clamp(24px,4.2vw,34px)/1.15 Geist,sans-serif;letter-spacing:-.025em;margin:14px 0 8px;max-width:24ch}
 h1 em{font-style:normal;color:var(--acc)}
-.lede{color:var(--mut);max-width:54ch;margin:0 0 20px}
+.lede{color:var(--mut);max-width:60ch;margin:0 0 18px;font-size:15px}
 .banner{background:var(--warnbg);color:var(--warnfg);border-radius:10px;padding:9px 12px;font-size:14px;margin:0 0 14px}
-.facts{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:8px 36px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.fact b{display:block;font:500 24px/1.15 Fraunces,serif}
-.fact span{font-size:13px;color:var(--mut)}
-.tape{display:flex;gap:26px;overflow-x:auto;white-space:nowrap;padding:9px 0;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--mut);scrollbar-width:none}
-.tape::-webkit-scrollbar{display:none}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:8px;background:var(--card);overflow:hidden}
+.fact{padding:12px 14px;border-left:1px solid var(--line)}.fact:first-child{border-left:0}
+.fact b{display:block;font:500 22px/1.2 "Geist Mono",monospace;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.fact span{font-size:11px;color:var(--mut);letter-spacing:.06em;text-transform:uppercase}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--acc);margin-right:7px;vertical-align:2px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.tape{overflow:hidden;white-space:nowrap;margin-top:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);font-size:12.5px;color:var(--mut);display:flex;align-items:center}
+.tape .lbl{flex:0 0 auto;padding:8px 10px;border-right:1px solid var(--line);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg);background:var(--card);z-index:1}
+.tape .view{overflow:hidden;flex:1;mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.tape .track{display:inline-flex;gap:34px;padding:8px 17px;animation:tick var(--dur,60s) linear infinite;will-change:transform}
+.tape:hover .track,.tape:active .track{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.tape .track{animation:none}.tape .view{overflow-x:auto}.dot{animation:none}}
 .tape b{font-weight:500}.tape .up{color:var(--acc)}.tape .down{color:var(--down)}.tape .amb{color:var(--amb)}
-h2{font:500 21px Fraunces,serif;margin:30px 0 2px;letter-spacing:-.01em}
-.h2s{color:var(--mut);font-size:14px;margin:0 0 12px}
+h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-transform:uppercase}
+.h2s{color:var(--mut);font-size:13.5px;margin:0 0 10px}
 .picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-.pick{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none;display:block}
+.pick{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;text-decoration:none;display:block}
 .pick:hover{border-color:var(--acc)}
-.pick .tag{font-size:12px;font-weight:600;color:var(--acc);letter-spacing:.04em;text-transform:uppercase}
-.pick .pr{font:500 28px/1.15 Fraunces,serif;margin:4px 0 2px}
+.pick .tag{font-size:11px;font-weight:600;color:var(--acc);letter-spacing:.08em;text-transform:uppercase}
+.pick .pr{font:500 24px/1.2 "Geist Mono",monospace;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin:4px 0 2px}
 .pick .pr small{font:400 13px Geist;color:var(--mut)}
 .pick .nm{font-weight:600}
 .pick .sp{font-size:14px;color:var(--mut)}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:8px;flex-wrap:wrap;align-items:end;padding:10px 0;border-bottom:1px solid var(--fg)}
 .bar label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);display:flex;flex-direction:column;gap:3px}
-.bar select,.bar input{font:500 16px "Geist Mono",monospace;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0;height:36px}
+.bar select,.bar input{font:500 16px "Geist Mono",monospace;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-width:0;height:36px}
 .bar input{width:78px}
 .bar .sp{flex:1}
 .bar .n{font-size:12.5px;color:var(--mut);padding-bottom:8px}
@@ -64,17 +72,17 @@ td.cpu{white-space:normal;min-width:170px}
 td.cpu b{font-weight:600}
 td small,.c small{display:block;color:var(--mut);font-size:12.5px}
 td.loc{white-space:normal;max-width:180px;color:var(--mut);font-size:13px}
-.badge{font-size:11.5px;font-weight:600;border-radius:99px;padding:1px 8px;background:var(--tint);color:var(--acc);white-space:nowrap}
+.badge{font:500 11px "Geist Mono",monospace;letter-spacing:.03em;text-transform:uppercase;border-radius:4px;padding:2px 6px;background:var(--tint);color:var(--acc);white-space:nowrap}
 .badge.lk{background:none;border:1px solid var(--line);color:var(--amb)}
 .badge.ls,.badge.un{background:none;border:1px solid var(--line);color:var(--mut)}
 .go{color:var(--acc);font-weight:500;text-decoration:none;white-space:nowrap}
 .go:hover{text-decoration:underline}
 .cards{display:none}
 .empty{padding:28px 0;color:var(--mut)}
-.more{margin:14px 0 0;font:500 14px Geist;background:none;border:1px solid var(--line);color:var(--fg);border-radius:99px;padding:8px 16px;cursor:pointer}
+.more{margin:14px 0 0;font:500 14px Geist;background:var(--card);border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:8px 16px;cursor:pointer}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
 .hosts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.host{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.host{border:1px solid var(--line);border-radius:6px;padding:9px 11px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .host:hover{border-color:var(--acc)}
 .host b{display:block;font-weight:600;font-size:14.5px}
 .host span{font-size:12.5px;color:var(--mut)}
@@ -85,7 +93,7 @@ footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);font-si
 footer p{margin:4px 0}
 @media (max-width:760px){
  .wrap{padding:0 16px 56px}
- .facts{grid-template-columns:1fr 1fr;gap:12px 20px}
+ .facts{grid-template-columns:1fr 1fr}.fact:nth-child(3){border-left:0}.fact:nth-child(n+3){border-top:1px solid var(--line)}
  .cols{grid-template-columns:1fr;gap:0}
  table{display:none}.cards{display:block}
  .c{display:grid;grid-template-columns:1fr auto;gap:1px 12px;padding:11px 0;border-top:1px solid var(--line);text-decoration:none}
@@ -100,16 +108,16 @@ footer p{margin:4px 0}
 <nav><a class="brand" href="./">dedi<span>stock</span></a>
  <button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></nav>
 
-<h1>Servers you can <em>order today</em>.</h1>
+<h1>Dedicated servers and VPS <em>in stock right now</em></h1>
 <p class="lede">Cheap servers sell out in hours. We check <span id="nh">the</span> hosts every 10 minutes and list only what is in stock, at the price you pay per month.</p>
 <div class="banner" id="banner" hidden></div>
 <div class="facts">
  <div class="fact"><b id="f1">–</b><span>orderable now</span></div>
  <div class="fact"><b id="f2">–</b><span>cheapest dedicated</span></div>
  <div class="fact"><b id="f3">–</b><span>cheapest 8 threads, 16 GB</span></div>
- <div class="fact"><b id="f4">–</b><span>last check</span></div>
+ <div class="fact"><b><i class="dot"></i><span id="f4" style="all:unset">–</span></b><span>last check</span></div>
 </div>
-<div class="tape m" id="tape" hidden></div>
+<div class="tape m" id="tape" hidden><span class="lbl">Live</span><div class="view"><div class="track" id="track"></div></div></div>
 
 <h2>Best value right now</h2><p class="h2s">Among servers a host confirms as in stock.</p>
 <div class="picks" id="picks"></div>
@@ -212,8 +220,10 @@ fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
 
 fetch('events.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(ev=>{if(!ev.length)return;
  const lab={sold_out:['down','Sold out'],appeared:['up','New'],restocked:['up','Back'],price_changed:['amb','Price']};
- $('tape').hidden=false;$('tape').innerHTML=ev.filter(e=>lab[e.type]).map(e=>{const [c,l]=lab[e.type],n=e.kind==='dedicated'?e.cpu.replace(/^(Intel|AMD)\s+/,''):e.name;
-  const pr=e.type==='price_changed'?`€${e.old_price} → €${e.new_price}`:'€'+(e.new_price??e.old_price);return `<span><b class="${c}">${l}</b> ${esc(n)} ${e.ram}GB · ${esc(e.provider)} · ${pr} · ${ago(e.at)}</span>`}).join('')}).catch(()=>{});
+ const items=ev.filter(e=>lab[e.type]).map(e=>{const [c,l]=lab[e.type],n=e.kind==='dedicated'?e.cpu.replace(/^(Intel|AMD)\s+/,''):e.name;
+  const pr=e.type==='price_changed'?`€${e.old_price} → €${e.new_price}`:'€'+(e.new_price??e.old_price);return `<span><b class="${c}">${l}</b> ${esc(n)} ${e.ram}GB · ${esc(e.provider)} · ${pr} · ${ago(e.at)}</span>`}).join('');
+ if(!items)return;$('tape').hidden=false;$('track').innerHTML=items+items;                 // doubled, so the loop has no seam
+ $('track').style.setProperty('--dur',Math.round($('track').scrollWidth/2/40)+'s')}).catch(()=>{});   // about 40 px per second: easy to read
 })();
 </script>
 </body></html>
