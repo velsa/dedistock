@@ -146,7 +146,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 .fg ul{list-style:none;margin:0;padding:0}.fg li{margin:5px 0}.fg a{color:var(--fg);text-decoration:none}.fg a:hover{color:var(--acc);text-decoration:underline}
 .fb{color:var(--mut);font-size:13px;max-width:34ch}
 @media (max-width:760px){.fg{grid-template-columns:1fr 1fr}.fg>div:first-child{grid-column:1/-1}}
-.mbar,.mpills,.sh,.mshow,.shade{display:none}
+.mbar,.mpills,.sh,.mshow,.shade,.asheet{display:none}
 @media (max-width:760px){
  .dk{display:none}
  .mbar{display:flex;gap:8px;align-items:center;position:sticky;top:0;z-index:6;background:var(--bg);padding:8px 0}.mbar .sp{flex:1}
@@ -164,6 +164,11 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
  #sheet .am,#sheet>.reset,#sheet>.sp,#sheet .alert{display:none}
  .mshow{display:block;height:46px;border:0;border-radius:10px;background:var(--acc);color:var(--accfg);font:600 15px Geist,sans-serif;cursor:pointer}
  .shade{position:fixed;inset:0;z-index:39;background:rgba(0,0,0,.5)}.shade:not([hidden]){display:block}
+ .asheet:not([hidden]){display:flex;flex-direction:column;gap:2px;position:fixed;left:0;right:0;bottom:0;z-index:40;max-height:86vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom))}
+ .asheet .sh{display:flex;justify-content:space-between;align-items:center}.asheet .sh b{font-size:16px}
+ .asheet .amh,.asheet .amf{color:var(--mut);font-size:13.5px;margin:6px 0;padding:0;border:0}
+ .asheet .apre a{display:flex;align-items:center;min-height:48px;padding:0 14px;margin:6px 0 0;border:1px solid var(--line);border-radius:10px;font:500 15px Geist,sans-serif;color:var(--fg);text-decoration:none}
+ .asheet .apre a:active,.asheet .apre a:focus{background:var(--tint);border-color:var(--acc);outline:0}
  .wrap{padding:0 16px 56px}
  .facts{grid-template-columns:1fr 1fr}.fact:nth-child(3){border-left:0}.fact:nth-child(n+3){border-top:1px solid var(--line)}
  .cols{grid-template-columns:1fr;gap:0}
@@ -193,9 +198,9 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 <h2 id="all">All servers<span class="cnt m" id="cnt"></span></h2><p class="h2s">Prices per month, without VAT. <span class="dk">Tap a column name to sort. </span><span id="fxnote"></span></p>
 <div class="mbar"><button type="button" class="mbtn" id="mf" aria-controls="sheet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters<span class="mn" id="mfn" hidden></span></button>
 <div class="dd msort" id="msortdd"><button type="button" class="mbtn" id="ms" aria-haspopup="listbox" aria-expanded="false"><span id="mst">Price ↑</span></button><ul class="ddl" id="msl" role="listbox" aria-label="Sort" hidden></ul></div>
-<span class="sp"></span><a class="mbtn mbell" id="mbell" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-label="Telegram alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></a></div>
+<span class="sp"></span><a class="mbtn mbell" id="mbell" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-label="Telegram alerts" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></a></div>
 <div class="mpills" id="mpills"></div>
-<div class="shade" id="shade" hidden></div><div class="bar" id="sheet"><div class="sh"><b>Filters</b><button type="button" class="reset" id="reset2">Reset</button></div><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div><button type="button" class="mshow" id="mshow">Show results</button></div>
+<div class="shade" id="shade" hidden></div><div class="asheet" id="bmenu" role="dialog" aria-modal="true" aria-labelledby="bmh" hidden><div class="sh"><b id="bmh">Telegram alerts</b><button type="button" class="reset" id="bmx">Close</button></div><p class="amh">I message you when a server like this is in stock:</p><div class="apre"></div><p class="amf">Or set filters, then tap the bell again: the alert uses your filters.</p></div><div class="bar" id="sheet"><div class="sh"><b>Filters</b><button type="button" class="reset" id="reset2">Reset</button></div><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div><button type="button" class="mshow" id="mshow">Show results</button></div>
 <table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th class="r" data-k="cpu_score" title="Multi-core CPU speed, Blender Open Data">CPU speed</th><th>Location</th><th>Stock</th><th class="r" data-k="price" title="Tap twice for a high-to-low sort">Price / month</th><th class="r" data-k="year" title="12 months plus the setup fee">First year</th><th class="r" data-k="gb">Per GB RAM</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
@@ -306,11 +311,15 @@ $('fields').addEventListener('keydown',e=>{const b=e.target.closest('.ddb'),li=e
 document.addEventListener('click',e=>{if(!e.target.closest('.dd'))closeAll()});
 // No filter set: do not send people to Telegram with nothing. Offer ready alerts here, one tap each.
 const APRE=MODE==='vps'?[['kvp5','VPS up to €5'],['kvp10','VPS up to €10'],['kvt4r8p20','VPS 4 threads, 8 GB, up to €20']]:[['kdp30','Up to €30'],['kdt8r16p40','8 threads, 16 GB, up to €40'],['kdr64p60','64 GB+, up to €60'],['kdynp50','NVMe up to €50']];
-$('apre').innerHTML=APRE.map(([c,l])=>`<a role="menuitem" href="https://t.me/DedistockBot?start=${c}" target="_blank" rel="noopener">${l}</a>`).join('');
+{const h=APRE.map(([c,l])=>`<a role="menuitem" href="https://t.me/DedistockBot?start=${c}" target="_blank" rel="noopener">${l}</a>`).join('');$('apre').innerHTML=h;document.querySelector('#bmenu .apre').innerHTML=h}
+// No real filter -> ready alerts here, never a bare "all servers" alert. Desktop: dropdown. Phone bell: bottom sheet (owner 2026-11-26).
 const amClose=()=>{$('amenu').hidden=true;$('alert').setAttribute('aria-expanded','false')};
 $('alert').addEventListener('click',e=>{if($('alert').dataset.code)return;e.preventDefault();const open=$('amenu').hidden;closeAll();$('amenu').hidden=!open;$('alert').setAttribute('aria-expanded',String(open));if(open)$('apre').firstElementChild.focus()});
 document.addEventListener('click',e=>{if(!e.target.closest('.am'))amClose()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('amenu').hidden){amClose();$('alert').focus()}});
+function asheet(open){$('bmenu').hidden=!open;$('shade').hidden=!open;document.body.style.overflow=open?'hidden':'';$('mbell').setAttribute('aria-expanded',String(open));if(open)$('bmenu').querySelector('.apre a').focus();else $('mbell').focus()}
+$('mbell').addEventListener('click',e=>{if($('alert').dataset.code)return;e.preventDefault();asheet(true)});
+$('bmx').onclick=()=>asheet(false);$('bmenu').addEventListener('click',e=>{if(e.target.closest('.apre a'))setTimeout(()=>asheet(false),0)});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('amenu').hidden){amClose();$('alert').focus()}else if(!$('bmenu').hidden)asheet(false)});
 function readURL(){const q=new URLSearchParams(location.search);{const k=q.get('k');if(k&&k[0]==='v'&&MODE!=='vps'){q.delete('k');location.replace('/vps/'+(q.toString()?'?'+q:'')+location.hash);return}if(k&&k[0]==='d'&&MODE==='vps'){q.delete('k');location.replace('/'+(q.toString()?'?'+q:'')+location.hash);return}q.delete('k')}for(const [f,k] of Object.entries(QK))if(q.has(k))F[f]=NUM.includes(f)?(+q.get(k)||0):q.get(k);if(q.get('n')==='1')F.dt='nvme';
  if(q.get('o')){sort=q.get('o');dir=q.get('d')==='desc'?-1:1}}
 function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}if(CUR!=='EUR')q.set('c',CUR);
@@ -328,7 +337,8 @@ function draw(){
  $('cards').innerHTML=v.map((o,i)=>`<a class="c" href="${go(o,'card',i+1)}"${gattr(o,'card',i+1)} target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${priceTxt(o)}${setupTxt(o)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span>${o.cpu_score?`<span class="x spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}% of dedicated servers</span></span>`:''}<span class="x">${esc(o.provider)} · ${loc(o)}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
  const code=FC='k'+MODE[0]+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
- $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
+ // "kd"/"kv" alone is only the page type, not a filter (2026-11-26 fix: since the VPS split the menu never opened)
+ const real=code.length>2;$('alert').href='https://t.me/DedistockBot'+(real?'?start='+code:'');$('alert').dataset.code=real?code:'';$('alertTxt').textContent=real?'Alert me on these':'Get Telegram alerts';
  $('mbell').href=$('alert').href;
  const act=[];if(F.prov)act.push(['prov',F.prov]);if(F.reg)act.push(['reg',F.reg]);
  if(F.t)act.push(['t',F.t+'+ threads']);if(F.r)act.push(['r',F.r+' GB +']);if(F.p)act.push(['p','up to '+money(F.p,0)]);if(F.dt)act.push(['dt',F.dt.toUpperCase().replace('NVME','NVMe')]);if(F.ds)act.push(['ds',gb(F.ds)+' +']);
@@ -340,7 +350,7 @@ function draw(){
 }
 const SORTS=[['price',1,'Price ↑'],['year',1,'First year (incl. setup)'],['price',-1,'Price ↓'],['cpu_score',-1,'CPU speed'],['ram',-1,'Most RAM'],['gb',1,'Price per GB'],['threads',-1,'Most threads']];
 function sheet(open){$('sheet').classList.toggle('open',open);$('shade').hidden=!open;document.body.style.overflow=open?'hidden':'';if(!open)closeAll()}
-$('mf').onclick=()=>sheet(true);$('shade').onclick=()=>sheet(false);$('mshow').onclick=()=>{sheet(false);$('all').scrollIntoView({behavior:'smooth'})};
+$('mf').onclick=()=>sheet(true);$('shade').onclick=()=>{if(!$('bmenu').hidden)asheet(false);else sheet(false)};$('mshow').onclick=()=>{sheet(false);$('all').scrollIntoView({behavior:'smooth'})};
 $('reset2').onclick=()=>$('reset').click();
 $('mpills').addEventListener('click',e=>{const b=e.target.closest('.mpill');if(!b)return;const k=b.dataset.k;F[k]=NUM.includes(k)?0:'';apply()});
 $('ms').addEventListener('click',e=>{e.stopPropagation();const l=$('msl'),open=l.hidden;closeAll();$('msl').innerHTML=SORTS.map(([k,d,n],i)=>`<li role="option" tabindex="-1" data-i="${i}" aria-selected="${k===sort&&d===dir}">${n}</li>`).join('');l.hidden=!open;$('ms').setAttribute('aria-expanded',String(open));if(open)l.firstElementChild.focus()});
