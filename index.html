@@ -271,7 +271,7 @@ const SUK=o=>o.setup_fee==null&&o.kind==='dedicated';
 const setupTxt=o=>o.setup_fee?`<small class="setup">+${setupAmt(o)} setup</small>`:SUK(o)?'<small class="setup">setup unknown</small>':'';
 // CPU speed (Blender Open Data, multi-core). Shown as a small meter: the score, and how many listed dedicated servers it beats.
 const spd=o=>o.cpu_score?`<span class="spd" title="CPU speed ${o.cpu_score}: faster than ${o.cpu_pct}% of dedicated servers listed (Blender Open Data)"><i style="width:${Math.max(4,o.cpu_pct||0)}%"></i></span><span class="spdn">CPU ${o.cpu_score}</span>`:'';
-const CO={'OVH Eco':'OVHcloud','OVH Bare Metal':'OVHcloud','OVH VPS':'OVHcloud','Hetzner auction':'Hetzner','Hetzner Cloud':'Hetzner','Hetzner dedicated':'Hetzner','Worldstream dedicated':'Worldstream','IONOS dedicated':'IONOS','Scaleway Elastic Metal':'Scaleway','Netcup':'netcup'};
+const CO={'OVH Eco':'OVHcloud','OVH Bare Metal':'OVHcloud','OVH VPS':'OVHcloud','Hetzner auction':'Hetzner','Hetzner Cloud':'Hetzner','Hetzner dedicated':'Hetzner','Worldstream dedicated':'Worldstream','IONOS dedicated':'IONOS','Scaleway Elastic Metal':'Scaleway','Netcup':'netcup','Vultr Cloud':'Vultr'};
 const company=p=>CO[p]||p;const hostOk=o=>!F.prov||o.provider===F.prov||company(o.provider)===F.prov;
 // One row per plan and price: merge the locations (Hetzner Cloud and Scaleway list each city separately).
 function group(list){const m=new Map();for(const o of list){const k=[o.provider,o.name,o.cpu,o.threads,o.ram,o.disk,o.price,o.signal,o.term,region(o),o.provider==='Hetzner auction'?o.sku:''].join('|');
