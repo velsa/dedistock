@@ -12,7 +12,12 @@
 <link rel="canonical" href="https://dedistock.com/">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="For AI agents">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Dedistock","url":"https://dedistock.com/","description":"Dedicated servers and VPS you can order now, with live stock and prices."}</script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a6b45'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23ffffff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0c0e0d">
+<meta property="og:image" content="https://dedistock.com/icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -29,6 +34,7 @@ a{color:inherit}
 nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
 .brand{font:600 15px "Geist Mono",monospace;letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
 .brand span{color:var(--acc)}
+.brand{display:inline-flex;align-items:center;gap:9px}.brand .mark{width:26px;height:26px}
 .icon{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:6px;color:var(--fg);display:grid;place-items:center;cursor:pointer}
 .icon svg{width:17px;height:17px}
 .navr{display:flex;gap:8px;align-items:center}.cur{position:relative}.curb{height:34px;min-width:0;font-size:13px;padding:0 9px}
@@ -165,7 +171,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 </style>
 </head>
 <body><div class="wrap">
-<nav><a class="brand" href="./">dedi<span>stock</span></a>
+<nav><a class="brand" href="/"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6.5" width="20" height="5.2" rx="1.6" fill="var(--acc)"/><rect x="6" y="13.4" width="20" height="5.2" rx="1.6" fill="none" stroke="var(--mut)" stroke-width="1.6"/><rect x="6" y="20.3" width="20" height="5.2" rx="1.6" fill="none" stroke="var(--mut)" stroke-width="1.6"/><circle cx="22.6" cy="9.1" r="1.25" fill="var(--bg)"/></svg>DEDI<span>STOCK</span></a>
  <div class="navr"><button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button><div class="dd cur" id="curdd"><button type="button" class="ddb curb" id="b-cur" aria-haspopup="listbox" aria-expanded="false" aria-label="Currency"><span id="curtxt">EUR</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg></button><ul class="ddl right" id="curl" role="listbox" aria-label="Currency" hidden></ul></div></div></nav>
 
 <h1>Dedicated servers and VPS <em>in stock right now</em></h1>
