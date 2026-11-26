@@ -174,6 +174,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
  .c .x{grid-column:1/-1;font-size:12.5px;color:var(--mut)}
 }
 .modesw{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-right:4px}.modesw a{font:500 13px Geist,system-ui,sans-serif;padding:5px 11px;text-decoration:none;color:var(--mut)}.modesw a+a{border-left:1px solid var(--line)}.modesw a[aria-current="page"]{background:var(--tint);color:var(--acc)}
+.lc{white-space:nowrap}.flg{margin-right:4px;font-size:1.05em;line-height:1}.ccb{display:inline-block;font:600 9.5px "Geist Mono",monospace;letter-spacing:.03em;padding:1px 3px;margin-right:4px;border:1px solid var(--line);border-radius:3px;color:var(--mut);vertical-align:1px}
 </style>
 </head>
 <body><div class="wrap">
@@ -231,7 +232,15 @@ $('theme').onclick=()=>{const d=matchMedia('(prefers-color-scheme: dark)').match
 const H=3600e3;let D=[],FRESH={},sort='price',dir=1,shown=60,DOC=null,EV=[];
 // Currency: prices are stored in euro; other currencies are converted at the ECB daily rate shipped with the data.
 const CURS={EUR:['€','Euro'],USD:['$','US dollar'],GBP:['£','Pound sterling'],CAD:['CA$','Canadian dollar'],AUD:['A$','Australian dollar'],SGD:['S$','Singapore dollar'],HKD:['HK$','Hong Kong dollar'],JPY:['¥','Japanese yen']};
-let CUR='EUR',FX={};
+let CUR='EUR',FX={},FC='';
+const WIN=/Win/.test((navigator.userAgentData&&navigator.userAgentData.platform)||navigator.platform||'');
+const flag=cc=>!cc||cc.length!==2?'':WIN?`<span class="ccb">${cc}</span>`:`<span class="flg" role="img" aria-label="${cc}">${String.fromCodePoint(...[...cc].map(c=>0x1F1A5+c.charCodeAt(0)))}</span>`;
+const fw=(o,j)=>`<span class="lc">${flag((o.cc||[])[j]||'')}${esc(o.where[j]||'')}</span>`;
+// J.6 click counter: Order links go through /go/<id> on our edge (cookie-free count, then 302 to the host).
+// <id> = FNV-1a of "provider|sku" in base 36; cf/worker.js computes the same.
+const fnv=s=>{let h=0x811c9dc5;for(const ch of s){h^=ch.codePointAt(0);h=Math.imul(h,0x01000193)>>>0}return h.toString(36)};
+const go=(o,src,pos)=>'/go/'+fnv(o.provider+'|'+(o.sku||o.name))+'?s='+src+'&p='+pos+'&c='+CUR+(FC?'&f='+encodeURIComponent(FC):'');
+const gattr=(o,src,pos)=>` data-go="${esc(src)}" data-gp="${esc(o.provider)}" data-gk="${esc(o.sku||o.name)}" data-gv="${o.price}" data-gi="${pos}"`;
 const rate=()=>CUR==='EUR'?1:(FX[CUR]||null);
 const money=(eur,dec)=>{const r=rate();if(eur==null||r==null)return '–';const v=eur*r,d=CUR==='JPY'?0:(dec??2);return (CUR==='EUR'?'':'≈')+CURS[CUR][0]+v.toLocaleString('en',{minimumFractionDigits:d,maximumFractionDigits:d})};
 const nice=eur=>{const r=rate()||1,v=eur*r,m=v<20?1:v<200?5:v<2000?50:v<20000?500:5000;return Math.round(v/m)*m};
@@ -251,7 +260,7 @@ const CO={'OVH Eco':'OVHcloud','OVH Bare Metal':'OVHcloud','OVH VPS':'OVHcloud',
 const company=p=>CO[p]||p;const hostOk=o=>!F.prov||o.provider===F.prov||company(o.provider)===F.prov;
 // One row per plan and price: merge the locations (Hetzner Cloud and Scaleway list each city separately).
 function group(list){const m=new Map();for(const o of list){const k=[o.provider,o.name,o.cpu,o.threads,o.ram,o.disk,o.price,o.signal,o.term,region(o),o.provider==='Hetzner auction'?o.sku:''].join('|');
-  const g=m.get(k);if(g){for(const w of o.where)if(!g.where.includes(w))g.where.push(w)}else m.set(k,{...o,where:[...o.where]})}return [...m.values()]}
+  const g=m.get(k);if(g){o.where.forEach((w,j)=>{if(!g.where.includes(w)){g.where.push(w);g.cc.push((o.cc||[])[j]||'')}})}else m.set(k,{...o,where:[...o.where],cc:[...(o.cc||o.where.map(()=>''))]})}return [...m.values()]}
 
 const NUM=['t','r','p','ds'],F={kind:'',prov:'',reg:'',t:0,r:0,p:0,dt:'',ds:0},QK={kind:'k',prov:'h',reg:'g',t:'t',r:'r',p:'p',dt:'y',ds:'s'};
 const STEPS=[0,2,4,6,8,12,16,24,32,48,64,96,128],gb=v=>v>=1000?(v/1000)+' TB':v+' GB';
@@ -304,11 +313,11 @@ function draw(){
  $('cnt').textContent=' · '+rows.length.toLocaleString();$('empty').hidden=rows.length>0;$('more').hidden=rows.length<=shown;
  $('reset').hidden=!Object.values(F).some(Boolean);
  document.querySelectorAll('th[data-k]').forEach(th=>{th.dataset.k===sort?th.setAttribute('aria-sort',dir>0?'ascending':'descending'):th.removeAttribute('aria-sort');th.textContent=th.textContent.replace(/ [↑↓]$/,'')+(th.dataset.k===sort?(dir>0?' ↑':' ↓'):'')});
- const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
- $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score?`<span class="spdl r">${spd(o)}</span>`:'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${money(o.price)}</b>${setupTxt(o)}</td><td class="r m">${money(o.price*12+(o.setup_fee||0),0)}${SUK(o)?'<small class="setup">+ setup</small>':''}</td><td class="r m">${money(o.price/o.ram)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
- $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${money(o.price)}${setupTxt(o)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span>${o.cpu_score?`<span class="x spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}% of dedicated servers</span></span>`:''}<span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
+ const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).map((w,j)=>fw(o,j)).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
+ $('tb').innerHTML=v.map((o,i)=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score?`<span class="spdl r">${spd(o)}</span>`:'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${loc(o)}</td><td>${badge(o)}</td><td class="r m"><b>${money(o.price)}</b>${setupTxt(o)}</td><td class="r m">${money(o.price*12+(o.setup_fee||0),0)}${SUK(o)?'<small class="setup">+ setup</small>':''}</td><td class="r m">${money(o.price/o.ram)}</td><td><a class="go" href="${go(o,'table',i+1)}"${gattr(o,'table',i+1)} target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
+ $('cards').innerHTML=v.map((o,i)=>`<a class="c" href="${go(o,'card',i+1)}"${gattr(o,'card',i+1)} target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${money(o.price)}${setupTxt(o)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span>${o.cpu_score?`<span class="x spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}% of dedicated servers</span></span>`:''}<span class="x">${esc(o.provider)} · ${loc(o)}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
- const code='k'+MODE[0]+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
+ const code=FC='k'+MODE[0]+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
  $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
  $('mbell').href=$('alert').href;
  const act=[];if(F.prov)act.push(['prov',F.prov]);if(F.reg)act.push(['reg',F.reg]);
@@ -338,7 +347,7 @@ function renderTop(){const d=DOC;if(!d)return;
  const sure=D.filter(o=>o.signal==='verified'&&fresh(o)===0),ded=sure.length?sure:D,KN=MODE==='vps'?'VPS':'dedicated';
  $('nh2').textContent=hosts.length;$('f1').textContent=D.length.toLocaleString();$('f2').textContent=eur(best(ded));$('f4').textContent=ago(d.at);
  const picks=[['Cheapest '+KN,best(ded)],['Most RAM under '+money(100,0),ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
- $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">${money(o.price)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div>${o.cpu_score?`<div class="sp spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}%</span></div>`:''}<div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
+ $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o],i)=>`<a class="pick" href="${go(o,'pick',i+1)}"${gattr(o,'pick',i+1)} target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">${money(o.price)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div>${o.cpu_score?`<div class="sp spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}%</span></div>`:''}<div class="sp">${esc(o.provider)} · ${fw(o,0)}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
  const by={};D.forEach(o=>{const b=by[o.provider]??={n:0,min:1e9};b.n++;b.min=Math.min(b.min,o.price)});
  $('hosts').innerHTML=hosts.map(k=>`<button class="host" data-h="${esc(k)}"><b>${esc(k)}</b><span>${FRESH[k]===2?'no recent check':by[k]?by[k].n+' in stock · from '+money(by[k].min):'none in stock'}</span></button>`).join('');
  $('hosts').querySelectorAll('.host').forEach(b=>b.onclick=()=>{F.prov=b.dataset.h;syncInputs();shown=60;draw();$('all').scrollIntoView({behavior:'smooth'})});
@@ -378,6 +387,8 @@ fetch('/radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{DOC=d;FX=(d.f
 }).catch(()=>{$('empty').hidden=false;$('empty').textContent='Could not load stock data. Reload the page.'});
 
 fetch('/events.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(ev=>{EV=(ev||[]).filter(e=>(e.kind||'dedicated')===MODE);renderTape()}).catch(()=>{});
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[data-go]');if(!a||typeof window.gtag!=='function')return;
+ window.gtag('event','order_click',{provider:a.dataset.gp,item_id:a.dataset.gk,value:+a.dataset.gv,currency:'EUR',source:a.dataset.go,position:+a.dataset.gi,page_type:MODE})});
 })();
 </script>
 </body></html>
