@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dedistock · dedicated servers and VPS in stock now</title>
+<title>Dedistock · dedicated servers in stock now</title>
 <meta name="description" content="Dedicated servers and VPS you can order today. Stock and prices from OVH, Hetzner, Leaseweb, Scaleway, Netcup, IONOS, Worldstream and Cherry Servers, checked every 10 minutes.">
 <meta property="og:title" content="Dedistock · servers you can order today">
 <meta property="og:description" content="Cheap servers sell out in hours. We check the hosts every 10 minutes and list only what is in stock.">
@@ -30,11 +30,15 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 Geist,system-ui,sans-serif}
 .m{font-family:"Geist Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 a{color:inherit}
-.wrap{max-width:1040px;margin:0 auto;padding:0 20px 64px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 64px}
+/* the table must fit: least-needed columns go first (Per GB, Location, Threads, First year, CPU speed); the Order link always stays visible */
+@media (max-width:1280px){table th:nth-child(11),table td:nth-child(11){display:none}}@media (max-width:1180px){table th:nth-child(7),table td:nth-child(7){display:none}}@media (max-width:1090px){table th:nth-child(3),table td:nth-child(3){display:none}}@media (max-width:1000px){table th:nth-child(10),table td:nth-child(10){display:none}}@media (max-width:900px){table th:nth-child(6),table td:nth-child(6){display:none}}@media (max-width:830px){table th:nth-child(5),table td:nth-child(5){display:none}}
 nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
 .brand{font:600 15px "Geist Mono",monospace;letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
 .brand span{color:var(--acc)}
-.brand{display:inline-flex;align-items:center;gap:9px}.brand .mark{width:26px;height:26px}
+.brand{display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
+.modesw{margin-left:auto;margin-right:10px}
+@media (max-width:520px){nav{flex-wrap:wrap;row-gap:10px}.modesw{order:3;width:100%;margin:0}.modesw a{flex:1;text-align:center;padding:7px 0}}.brand .mark{width:26px;height:26px}
 .icon{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:6px;color:var(--fg);display:grid;place-items:center;cursor:pointer}
 .icon svg{width:17px;height:17px}
 .navr{display:flex;gap:8px;align-items:center}.cur{position:relative}.curb{height:34px;min-width:0;font-size:13px;padding:0 9px}
@@ -169,16 +173,17 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
  .c .s{font:400 12.5px "Geist Mono",monospace;color:var(--mut)}.c .w{font-size:12.5px;text-align:right;color:var(--mut)}
  .c .x{grid-column:1/-1;font-size:12.5px;color:var(--mut)}
 }
+.modesw{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-right:4px}.modesw a{font:500 13px Geist,system-ui,sans-serif;padding:5px 11px;text-decoration:none;color:var(--mut)}.modesw a+a{border-left:1px solid var(--line)}.modesw a[aria-current="page"]{background:var(--tint);color:var(--acc)}
 </style>
 </head>
 <body><div class="wrap">
 <nav><a class="brand" href="/"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6.5" width="20" height="5.2" rx="1.6" fill="var(--acc)"/><rect x="6" y="13.4" width="20" height="5.2" rx="1.6" fill="none" stroke="var(--mut)" stroke-width="1.6"/><rect x="6" y="20.3" width="20" height="5.2" rx="1.6" fill="none" stroke="var(--mut)" stroke-width="1.6"/><circle cx="22.6" cy="9.1" r="1.25" fill="var(--bg)"/></svg>DEDI<span>STOCK</span></a>
- <div class="navr"><button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button><div class="dd cur" id="curdd"><button type="button" class="ddb curb" id="b-cur" aria-haspopup="listbox" aria-expanded="false" aria-label="Currency"><span id="curtxt">EUR</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg></button><ul class="ddl right" id="curl" role="listbox" aria-label="Currency" hidden></ul></div></div></nav>
+ <div class="modesw" role="navigation" aria-label="Server type"><a href="/" id="m-ded">Dedicated</a><a href="/vps/" id="m-vps">VPS</a></div><div class="navr"><button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button><div class="dd cur" id="curdd"><button type="button" class="ddb curb" id="b-cur" aria-haspopup="listbox" aria-expanded="false" aria-label="Currency"><span id="curtxt">EUR</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg></button><ul class="ddl right" id="curl" role="listbox" aria-label="Currency" hidden></ul></div></div></nav>
 
-<h1>Dedicated servers and VPS <em>in stock right now</em></h1>
+<h1 id="h1">Dedicated servers <em>in stock right now</em></h1>
 <p class="lede">Cheap servers sell out in hours. We check the hosts every 10 minutes and list only what you can order, at the price you pay per month.</p>
 <div class="banner" id="banner" hidden></div>
-<p class="status m"><i class="dot"></i><b id="f1">–</b> <span>in stock at</span> <b id="nh2">–</b> <span>hosts · dedicated from</span> <b id="f2">–</b> <span>· checked</span> <b id="f4">–</b></p>
+<p class="status m"><i class="dot"></i><b id="f1">–</b> <span>in stock at</span> <b id="nh2">–</b> <span id="fromtxt">hosts · from</span> <b id="f2">–</b> <span>· checked</span> <b id="f4">–</b></p>
 <div class="tape m" id="tape" hidden><span class="lbl">Live</span><div class="view"><div class="track" id="track"></div></div></div>
 
 <h2>Best value right now</h2>
@@ -251,7 +256,8 @@ function group(list){const m=new Map();for(const o of list){const k=[o.provider,
 const NUM=['t','r','p','ds'],F={kind:'',prov:'',reg:'',t:0,r:0,p:0,dt:'',ds:0},QK={kind:'k',prov:'h',reg:'g',t:'t',r:'r',p:'p',dt:'y',ds:'s'};
 const STEPS=[0,2,4,6,8,12,16,24,32,48,64,96,128],gb=v=>v>=1000?(v/1000)+' TB':v+' GB';
 // Filter controls are our own components (a listbox dropdown and a stepper), not browser defaults.
-const UI=[{id:'kind',label:'Type',opts:[['','All'],['dedicated','Dedicated'],['vps','VPS']]},{id:'prov',label:'Host',opts:[['','All']]},{id:'reg',label:'Region',opts:[['','All']],hide:true},
+const MODE=location.pathname.startsWith('/vps')?'vps':'dedicated';$(MODE==='vps'?'m-vps':'m-ded').setAttribute('aria-current','page');
+const UI=[{id:'prov',label:'Host',opts:[['','All']]},{id:'reg',label:'Region',opts:[['','All']],hide:true},
  {id:'t',label:'Threads',step:true},
  {id:'r',label:'RAM',opts:[0,4,8,16,32,64,128,256,512].map(v=>[v,v?v+' GB +':'Any'])},
  {id:'p',label:'Price / month',opts:[]},
@@ -280,13 +286,13 @@ $('fields').addEventListener('keydown',e=>{const b=e.target.closest('.ddb'),li=e
   else if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(li)}else if(e.key==='Escape'||e.key==='Tab'){const id=li.closest('.dd').dataset.id;closeAll();if(e.key==='Escape')$('b-'+id).focus()}}});
 document.addEventListener('click',e=>{if(!e.target.closest('.dd'))closeAll()});
 // No filter set: do not send people to Telegram with nothing. Offer ready alerts here, one tap each.
-const APRE=[['kdp30','Dedicated up to €30'],['t8r16p30','8 threads, 16 GB, up to €30'],['kdr64p60','Dedicated, 64 GB+, up to €60'],['kdynp50','Dedicated NVMe up to €50'],['kvp10','VPS up to €10']];
+const APRE=MODE==='vps'?[['kvp5','VPS up to €5'],['kvp10','VPS up to €10'],['kvt4r8p20','VPS 4 threads, 8 GB, up to €20']]:[['kdp30','Up to €30'],['kdt8r16p40','8 threads, 16 GB, up to €40'],['kdr64p60','64 GB+, up to €60'],['kdynp50','NVMe up to €50']];
 $('apre').innerHTML=APRE.map(([c,l])=>`<a role="menuitem" href="https://t.me/DedistockBot?start=${c}" target="_blank" rel="noopener">${l}</a>`).join('');
 const amClose=()=>{$('amenu').hidden=true;$('alert').setAttribute('aria-expanded','false')};
 $('alert').addEventListener('click',e=>{if($('alert').dataset.code)return;e.preventDefault();const open=$('amenu').hidden;closeAll();$('amenu').hidden=!open;$('alert').setAttribute('aria-expanded',String(open));if(open)$('apre').firstElementChild.focus()});
 document.addEventListener('click',e=>{if(!e.target.closest('.am'))amClose()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('amenu').hidden){amClose();$('alert').focus()}});
-function readURL(){const q=new URLSearchParams(location.search);for(const [f,k] of Object.entries(QK))if(q.has(k))F[f]=NUM.includes(f)?(+q.get(k)||0):q.get(k);if(q.get('n')==='1')F.dt='nvme';
+function readURL(){const q=new URLSearchParams(location.search);{const k=q.get('k');if(k&&k[0]==='v'&&MODE!=='vps'){q.delete('k');location.replace('/vps/'+(q.toString()?'?'+q:'')+location.hash);return}if(k&&k[0]==='d'&&MODE==='vps'){q.delete('k');location.replace('/'+(q.toString()?'?'+q:'')+location.hash);return}q.delete('k')}for(const [f,k] of Object.entries(QK))if(q.has(k))F[f]=NUM.includes(f)?(+q.get(k)||0):q.get(k);if(q.get('n')==='1')F.dt='nvme';
  if(q.get('o')){sort=q.get('o');dir=q.get('d')==='desc'?-1:1}}
 function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}if(CUR!=='EUR')q.set('c',CUR);
  const u=location.pathname+(q.toString()?'?'+q:'');if(u!==location.pathname+location.search)history.replaceState(null,'',u)}
@@ -302,10 +308,10 @@ function draw(){
  $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score?`<span class="spdl r">${spd(o)}</span>`:'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${money(o.price)}</b>${setupTxt(o)}</td><td class="r m">${money(o.price*12+(o.setup_fee||0),0)}${SUK(o)?'<small class="setup">+ setup</small>':''}</td><td class="r m">${money(o.price/o.ram)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
  $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${money(o.price)}${setupTxt(o)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span>${o.cpu_score?`<span class="x spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}% of dedicated servers</span></span>`:''}<span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
- const code=(F.kind?'k'+F.kind[0]:'')+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
+ const code='k'+MODE[0]+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
  $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
  $('mbell').href=$('alert').href;
- const act=[];if(F.kind)act.push(['kind',F.kind==='dedicated'?'Dedicated':'VPS']);if(F.prov)act.push(['prov',F.prov]);if(F.reg)act.push(['reg',F.reg]);
+ const act=[];if(F.prov)act.push(['prov',F.prov]);if(F.reg)act.push(['reg',F.reg]);
  if(F.t)act.push(['t',F.t+'+ threads']);if(F.r)act.push(['r',F.r+' GB +']);if(F.p)act.push(['p','up to '+money(F.p,0)]);if(F.dt)act.push(['dt',F.dt.toUpperCase().replace('NVME','NVMe')]);if(F.ds)act.push(['ds',gb(F.ds)+' +']);
  $('mfn').hidden=!act.length;$('mfn').textContent=act.length;$('mf').classList.toggle('on',act.length>0);
  $('mpills').innerHTML=act.map(([k,l])=>`<button type="button" class="mpill" data-k="${k}">${esc(l)}<i>✕</i></button>`).join('');
@@ -328,10 +334,10 @@ document.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.d
 const ago=t=>{const m=Math.round((Date.now()-new Date(t))/6e4);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
 
 function renderTop(){const d=DOC;if(!d)return;
- const hosts=Object.keys(d.sources),best=a=>[...a].sort((x,y)=>x.price-y.price)[0],eur=o=>o?money(o.price):'–';
- const sure=D.filter(o=>o.signal==='verified'&&fresh(o)===0),ded=sure.filter(o=>o.kind==='dedicated');
+ const hosts=[...new Set(D.map(o=>company(o.provider)))],best=a=>[...a].sort((x,y)=>x.price-y.price)[0],eur=o=>o?money(o.price):'–';
+ const sure=D.filter(o=>o.signal==='verified'&&fresh(o)===0),ded=sure.length?sure:D,KN=MODE==='vps'?'VPS':'dedicated';
  $('nh2').textContent=hosts.length;$('f1').textContent=D.length.toLocaleString();$('f2').textContent=eur(best(ded));$('f4').textContent=ago(d.at);
- const picks=[['Cheapest dedicated',best(ded)],['Most RAM under '+money(100,0),ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
+ const picks=[['Cheapest '+KN,best(ded)],['Most RAM under '+money(100,0),ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
  $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">${money(o.price)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div>${o.cpu_score?`<div class="sp spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}%</span></div>`:''}<div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
  const by={};D.forEach(o=>{const b=by[o.provider]??={n:0,min:1e9};b.n++;b.min=Math.min(b.min,o.price)});
  $('hosts').innerHTML=hosts.map(k=>`<button class="host" data-h="${esc(k)}"><b>${esc(k)}</b><span>${FRESH[k]===2?'no recent check':by[k]?by[k].n+' in stock · from '+money(by[k].min):'none in stock'}</span></button>`).join('');
@@ -358,19 +364,20 @@ $('curl').addEventListener('keydown',e=>{const li=e.target.closest('li');if(!li)
  else if(e.key==='Enter'||e.key===' '){e.preventDefault();li.click()}else if(e.key==='Escape'){$('curl').hidden=true;$('b-cur').focus()}});
 document.addEventListener('click',e=>{if(!e.target.closest('#curdd')){$('curl').hidden=true;$('b-cur').setAttribute('aria-expanded','false')}});
 
-fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{DOC=d;FX=(d.fx&&d.fx.rates)||{};
+fetch('/radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{DOC=d;FX=(d.fx&&d.fx.rates)||{};
  const now=Date.now(),stale=[];
  for(const [k,v] of Object.entries(d.sources)){const t=v.last_success?now-new Date(v.last_success):Infinity;FRESH[k]=t>6*H?2:t>2*H?1:0;if(FRESH[k])stale.push(k)}
  if(now-new Date(d.at)>2*H){$('banner').hidden=false;$('banner').textContent=`This data is from ${new Date(d.at).toLocaleString()}. Stock may have changed since then.`}
  else if(stale.length){$('banner').hidden=false;$('banner').textContent=`Not confirmed right now: ${stale.join(', ')}. The last good check was over 2 hours ago.`}
- D=group(d.offers.filter(o=>o.stock==='in'&&fresh(o)<2));
- const hosts=Object.keys(d.sources),cos=[...new Set(hosts.map(company))];UI.find(u=>u.id==='prov').opts=[['','All'],...cos.map(k=>[k,k])];
+ if(MODE==='vps'){$('h1').innerHTML='VPS <em>in stock right now</em>';document.title='Dedistock · VPS in stock now'}
+ D=group(d.offers.filter(o=>o.kind===MODE&&o.stock==='in'&&fresh(o)<2));
+ const cos=[...new Set(d.offers.filter(o=>o.kind===MODE).map(o=>company(o.provider)))].sort();UI.find(u=>u.id==='prov').opts=[['','All'],...cos.map(k=>[k,k])];
  const regs=[...new Set(D.map(region))].sort(),ru=UI.find(u=>u.id==='reg');ru.opts=[['','All'],...regs.map(k=>[k,k])];ru.hide=regs.length<2;
  readURL();let c=new URLSearchParams(location.search).get('c');if(!c){try{c=localStorage.getItem('ds-cur')}catch(e){}}
  setCur((c||'EUR').toUpperCase(),false);
 }).catch(()=>{$('empty').hidden=false;$('empty').textContent='Could not load stock data. Reload the page.'});
 
-fetch('events.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(ev=>{EV=ev||[];renderTape()}).catch(()=>{});
+fetch('/events.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(ev=>{EV=(ev||[]).filter(e=>(e.kind||'dedicated')===MODE);renderTape()}).catch(()=>{});
 })();
 </script>
 </body></html>
