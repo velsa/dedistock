@@ -105,6 +105,7 @@ h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-tr
 .amh,.amf{font-size:12px;color:var(--mut);padding:6px 10px}
 .amf{border-top:1px solid var(--line);margin-top:4px}
 .cnt{color:var(--mut);font-weight:500}
+.setup{display:block;font:400 11.5px Geist,sans-serif;color:var(--mut);white-space:nowrap}
 .spdl{display:inline-flex;align-items:center;gap:7px}.spdl.r{justify-content:flex-end}.spd{display:inline-block;width:46px;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
 .spd i{display:block;height:100%;background:var(--acc)}.spdn{font:500 12.5px "Geist Mono",monospace;color:var(--fg)}.spdp{font-size:12px;color:var(--mut)}
 .reset{font:500 13px Geist;background:none;border:0;color:var(--acc);cursor:pointer;padding:0 0 8px;text-decoration:underline}
@@ -189,7 +190,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 <span class="sp"></span><a class="mbtn mbell" id="mbell" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-label="Telegram alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></a></div>
 <div class="mpills" id="mpills"></div>
 <div class="shade" id="shade" hidden></div><div class="bar" id="sheet"><div class="sh"><b>Filters</b><button type="button" class="reset" id="reset2">Reset</button></div><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div><button type="button" class="mshow" id="mshow">Show results</button></div>
-<table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th class="r" data-k="cpu_score" title="Multi-core CPU speed, Blender Open Data">CPU speed</th><th>Location</th><th>Stock</th><th class="r" data-k="price">Price / month</th><th class="r" data-k="gb">Per GB RAM</th><th></th></tr></thead><tbody id="tb"></tbody></table>
+<table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th class="r" data-k="cpu_score" title="Multi-core CPU speed, Blender Open Data">CPU speed</th><th>Location</th><th>Stock</th><th class="r" data-k="price" title="Tap twice for a high-to-low sort">Price / month</th><th class="r" data-k="year" title="12 months plus the setup fee">First year</th><th class="r" data-k="gb">Per GB RAM</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
 <button class="more" id="more" hidden>Show more</button>
@@ -208,6 +209,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 <div class="notes">
  <p>Prices and plan details are quoted from each host's own website. Every row links to the source. Prices can change before you order.</p>
  <p>CPU speed: multi-core render speed from <a href="https://opendata.blender.org" rel="noopener">Blender Open Data</a> (CC0), median of public benchmark runs. Higher is faster. An estimate for the CPU model, not a test of this server. No score for dual-CPU servers.</p>
+ <p>Setup fee: a one-time fee some hosts charge on the first month. OVH charges about one month's price when you pay monthly without a contract (no fee if you pay 12 months up front). "First year" = 12 months plus the setup fee. Leaseweb does not publish its setup fee in its data.</p>
  <p>OVH lists only servers ready in about 1 hour. Hetzner auction prices include the IPv4 address. Netcup prices are for a 12-month term.</p>
  <p>The Telegram bot keeps your chat id and your alerts. Send /stop to delete them. Dedistock does not sell servers.</p>
 </div>
@@ -286,7 +288,7 @@ function readURL(){const q=new URLSearchParams(location.search);for(const [f,k] 
 function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}if(CUR!=='EUR')q.set('c',CUR);
  const u=location.pathname+(q.toString()?'?'+q:'');if(u!==location.pathname+location.search)history.replaceState(null,'',u)}
 const syncInputs=build;
-const KEY={cpu_score:o=>o.cpu_score||0,price:o=>o.price,gb:o=>o.price/o.ram,threads:o=>o.threads,ram:o=>o.ram,disk:o=>o.disk,cpu:o=>name(o).toLowerCase(),provider:o=>o.provider};
+const KEY={year:o=>o.price*12+(o.setup_fee||0),cpu_score:o=>o.cpu_score||0,price:o=>o.price,gb:o=>o.price/o.ram,threads:o=>o.threads,ram:o=>o.ram,disk:o=>o.disk,cpu:o=>name(o).toLowerCase(),provider:o=>o.provider};
 function draw(){
  let rows=D.filter(o=>(!F.kind||(o.kind==='dedicated')===(F.kind==='dedicated'))&&hostOk(o)&&(!F.reg||region(o)===F.reg)&&o.threads>=F.t&&o.ram>=F.r&&(!F.p||o.price<=F.p)&&(!F.dt||(o.disk_type||(o.nvme?'nvme':''))===F.dt)&&o.disk>=F.ds);
  const key=KEY[sort]||KEY.price;rows.sort((a,b)=>(key(a)>key(b)?1:key(a)<key(b)?-1:a.price-b.price)*dir);
@@ -294,8 +296,8 @@ function draw(){
  $('reset').hidden=!Object.values(F).some(Boolean);
  document.querySelectorAll('th[data-k]').forEach(th=>{th.dataset.k===sort?th.setAttribute('aria-sort',dir>0?'ascending':'descending'):th.removeAttribute('aria-sort');th.textContent=th.textContent.replace(/ [↑↓]$/,'')+(th.dataset.k===sort?(dir>0?' ↑':' ↓'):'')});
  const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
- $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score?`<span class="spdl r">${spd(o)}</span>`:'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${money(o.price)}</b></td><td class="r m">${money(o.price/o.ram)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
- $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${money(o.price)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span>${o.cpu_score?`<span class="x spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}% of dedicated servers</span></span>`:''}<span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
+ $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score?`<span class="spdl r">${spd(o)}</span>`:'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${money(o.price)}</b>${o.setup_fee?`<small class="setup">+${money(o.setup_fee,0)} setup</small>`:''}</td><td class="r m">${money(o.price*12+(o.setup_fee||0),0)}</td><td class="r m">${money(o.price/o.ram)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
+ $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${money(o.price)}${o.setup_fee?`<small class="setup">+${money(o.setup_fee,0)} setup</small>`:''}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span>${o.cpu_score?`<span class="x spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}% of dedicated servers</span></span>`:''}<span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
  const code=(F.kind?'k'+F.kind[0]:'')+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
  $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
@@ -308,7 +310,7 @@ function draw(){
  $('mshow').textContent='Show '+rows.length.toLocaleString()+(rows.length===1?' server':' servers');
  writeURL();
 }
-const SORTS=[['price',1,'Price ↑'],['price',-1,'Price ↓'],['cpu_score',-1,'CPU speed'],['ram',-1,'Most RAM'],['gb',1,'Price per GB'],['threads',-1,'Most threads']];
+const SORTS=[['price',1,'Price ↑'],['year',1,'First year (incl. setup)'],['price',-1,'Price ↓'],['cpu_score',-1,'CPU speed'],['ram',-1,'Most RAM'],['gb',1,'Price per GB'],['threads',-1,'Most threads']];
 function sheet(open){$('sheet').classList.toggle('open',open);$('shade').hidden=!open;document.body.style.overflow=open?'hidden':'';if(!open)closeAll()}
 $('mf').onclick=()=>sheet(true);$('shade').onclick=()=>sheet(false);$('mshow').onclick=()=>{sheet(false);$('all').scrollIntoView({behavior:'smooth'})};
 $('reset2').onclick=()=>$('reset').click();
