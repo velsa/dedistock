@@ -31,6 +31,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0
 .brand span{color:var(--acc)}
 .icon{width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:6px;color:var(--fg);display:grid;place-items:center;cursor:pointer}
 .icon svg{width:17px;height:17px}
+.navr{display:flex;gap:8px;align-items:center}.cur{position:relative}.curb{height:34px;min-width:0;font-size:13px;padding:0 9px}
+.cur .ddl li small{color:var(--mut);margin-left:8px;font-size:12px}
 h1{font:600 clamp(24px,4.2vw,34px)/1.15 Geist,sans-serif;letter-spacing:-.025em;margin:14px 0 8px;text-wrap:balance}
 h1 em{font-style:normal;color:var(--acc)}
 .lede{color:var(--mut);margin:0 0 10px;font-size:15px;text-wrap:pretty}
@@ -145,7 +147,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 </head>
 <body><div class="wrap">
 <nav><a class="brand" href="./">dedi<span>stock</span></a>
- <button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button></nav>
+ <div class="navr"><button class="icon" id="theme" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button><div class="dd cur" id="curdd"><button type="button" class="ddb curb" id="b-cur" aria-haspopup="listbox" aria-expanded="false" aria-label="Currency"><span id="curtxt">EUR</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg></button><ul class="ddl right" id="curl" role="listbox" aria-label="Currency" hidden></ul></div></div></nav>
 
 <h1>Dedicated servers and VPS <em>in stock right now</em></h1>
 <p class="lede">Cheap servers sell out in hours. We check the hosts every 10 minutes and list only what you can order, at the price you pay per month.</p>
@@ -156,9 +158,9 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 <h2>Best value right now</h2>
 <div class="picks" id="picks"></div>
 
-<h2 id="all">All servers<span class="cnt m" id="cnt"></span></h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
+<h2 id="all">All servers<span class="cnt m" id="cnt"></span></h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort. <span id="fxnote"></span></p>
 <div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div></div>
-<table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th class="r" data-k="cpu_score" title="Multi-core CPU speed, Blender Open Data">CPU speed</th><th>Location</th><th>Stock</th><th class="r" data-k="price">€ / month</th><th class="r" data-k="gb">€ / GB</th><th></th></tr></thead><tbody id="tb"></tbody></table>
+<table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th class="r" data-k="cpu_score" title="Multi-core CPU speed, Blender Open Data">CPU speed</th><th>Location</th><th>Stock</th><th class="r" data-k="price">Price / month</th><th class="r" data-k="gb">Per GB RAM</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
 <button class="more" id="more" hidden>Show more</button>
@@ -190,10 +192,16 @@ const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},se
 const t0=store.get('ds-theme');if(t0)document.documentElement.dataset.theme=t0;
 $('theme').onclick=()=>{const d=matchMedia('(prefers-color-scheme: dark)').matches,c=document.documentElement.dataset.theme||(d?'dark':'light'),n=c==='dark'?'light':'dark';document.documentElement.dataset.theme=n;store.set('ds-theme',n)};
 
-const H=3600e3;let D=[],FRESH={},sort='price',dir=1,shown=60;
+const H=3600e3;let D=[],FRESH={},sort='price',dir=1,shown=60,DOC=null,EV=[];
+// Currency: prices are stored in euro; other currencies are converted at the ECB daily rate shipped with the data.
+const CURS={EUR:['€','Euro'],USD:['$','US dollar'],GBP:['£','Pound sterling'],CAD:['CA$','Canadian dollar'],AUD:['A$','Australian dollar'],SGD:['S$','Singapore dollar'],HKD:['HK$','Hong Kong dollar'],JPY:['¥','Japanese yen']};
+let CUR='EUR',FX={};
+const rate=()=>CUR==='EUR'?1:(FX[CUR]||null);
+const money=(eur,dec)=>{const r=rate();if(eur==null||r==null)return '–';const v=eur*r,d=CUR==='JPY'?0:(dec??2);return (CUR==='EUR'?'':'≈')+CURS[CUR][0]+v.toLocaleString('en',{minimumFractionDigits:d,maximumFractionDigits:d})};
+const nice=eur=>{const r=rate()||1,v=eur*r,m=v<20?1:v<200?5:v<2000?50:v<20000?500:5000;return Math.round(v/m)*m};
 const fresh=o=>FRESH[o.provider]??2;                 // 0 fresh, 1 not confirmed (>2 h), 2 too old (>6 h)
 const name=o=>o.kind==='dedicated'?o.cpu.replace(/^(Intel|AMD)\s+/,''):o.name.replace(/ G[\d.]+$/,'');
-const sub=o=>(o.kind==='dedicated'?o.name:o.cpu)+(o.term!=='monthly'?' · '+o.term+' term':'')+(o.setup_fee?' · setup €'+o.setup_fee:'');
+const sub=o=>(o.kind==='dedicated'?o.name:o.cpu)+(o.term!=='monthly'?' · '+o.term+' term':'')+(o.setup_fee?' · setup '+money(o.setup_fee):'');
 const DT={nvme:' NVMe',ssd:' SSD',hdd:' HDD',mixed:' mixed'};
 const dsk=o=>o.disk?(o.disk>=1000?(o.disk/1000).toFixed(1)+' TB':o.disk+' GB')+(DT[o.disk_type]||(o.nvme?' NVMe':'')):'extra';
 const badge=o=>fresh(o)===1?'<span class="badge un">Not confirmed</span>':o.signal==='listed'?'<span class="badge ls">Listed</span>':o.signal==='indicative'?'<span class="badge lk">Likely</span>':'<span class="badge">In stock</span>';
@@ -210,11 +218,12 @@ const STEPS=[0,2,4,6,8,12,16,24,32,48,64,96,128],gb=v=>v>=1000?(v/1000)+' TB':v+
 const UI=[{id:'kind',label:'Type',opts:[['','All'],['dedicated','Dedicated'],['vps','VPS']]},{id:'prov',label:'Host',opts:[['','All']]},{id:'reg',label:'Region',opts:[['','All']],hide:true},
  {id:'t',label:'Threads',step:true},
  {id:'r',label:'RAM',opts:[0,4,8,16,32,64,128,256,512].map(v=>[v,v?v+' GB +':'Any'])},
- {id:'p',label:'Price / month',opts:[0,10,20,30,50,75,100,150,250,500].map(v=>[v,v?'up to €'+v:'Any'])},
+ {id:'p',label:'Price / month',opts:[]},
  {id:'dt',label:'Disk type',opts:[['','Any'],['nvme','NVMe'],['ssd','SSD'],['hdd','HDD']]},
  {id:'ds',label:'Disk size',opts:[0,250,500,1000,2000,4000,10000].map(v=>[v,v?gb(v)+' +':'Any'])}];
 const CHEV='<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg>';
-function cur(u){const o=u.opts.find(x=>String(x[0])===String(F[u.id]));return o?o[1]:u.id==='p'?'up to €'+F.p:u.id==='r'?F.r+' GB +':u.id==='ds'?gb(F.ds)+' +':String(F[u.id])}
+function priceOpts(){UI.find(u=>u.id==='p').opts=[0,10,20,30,50,75,100,150,250,500].map(v=>[v,v?'up to '+(CUR==='EUR'?'€'+v:CURS[CUR][0]+nice(v).toLocaleString('en')):'Any'])}
+function cur(u){const o=u.opts.find(x=>String(x[0])===String(F[u.id]));return o?o[1]:u.id==='p'?'up to '+money(F.p,0):u.id==='r'?F.r+' GB +':u.id==='ds'?gb(F.ds)+' +':String(F[u.id])}
 function build(){$('fields').innerHTML=UI.filter(u=>!u.hide).map(u=>u.step?
  `<div class="fl"><span class="lab" id="l-${u.id}">${u.label}</span><div class="stp${F.t?' on':''}" role="group" aria-labelledby="l-${u.id}"><button type="button" data-step="-1" aria-label="Fewer threads"${F.t?'':' disabled'}>−</button><output aria-live="polite">${F.t?F.t+' +':'Any'}</output><button type="button" data-step="1" aria-label="More threads"${F.t>=STEPS[STEPS.length-1]?' disabled':''}>+</button></div></div>`
  :`<div class="fl dd" data-id="${u.id}"><span class="lab" id="l-${u.id}">${u.label}</span><button type="button" class="ddb${F[u.id]?' on':''}" id="b-${u.id}" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="l-${u.id} b-${u.id}"><span>${esc(cur(u))}</span>${CHEV}</button><ul class="ddl" role="listbox" aria-labelledby="l-${u.id}" hidden>${u.opts.map(o=>`<li role="option" tabindex="-1" data-v="${esc(o[0])}" aria-selected="${String(o[0])===String(F[u.id])}">${esc(o[1])}</li>`).join('')}</ul></div>`).join('')}
@@ -243,7 +252,7 @@ document.addEventListener('click',e=>{if(!e.target.closest('.am'))amClose()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('amenu').hidden){amClose();$('alert').focus()}});
 function readURL(){const q=new URLSearchParams(location.search);for(const [f,k] of Object.entries(QK))if(q.has(k))F[f]=NUM.includes(f)?(+q.get(k)||0):q.get(k);if(q.get('n')==='1')F.dt='nvme';
  if(q.get('o')){sort=q.get('o');dir=q.get('d')==='desc'?-1:1}}
-function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}
+function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}if(CUR!=='EUR')q.set('c',CUR);
  const u=location.pathname+(q.toString()?'?'+q:'');if(u!==location.pathname+location.search)history.replaceState(null,'',u)}
 const syncInputs=build;
 const KEY={cpu_score:o=>o.cpu_score||0,price:o=>o.price,gb:o=>o.price/o.ram,threads:o=>o.threads,ram:o=>o.ram,disk:o=>o.disk,cpu:o=>name(o).toLowerCase(),provider:o=>o.provider};
@@ -254,8 +263,8 @@ function draw(){
  $('reset').hidden=!Object.values(F).some(Boolean);
  document.querySelectorAll('th[data-k]').forEach(th=>{th.dataset.k===sort?th.setAttribute('aria-sort',dir>0?'ascending':'descending'):th.removeAttribute('aria-sort');th.textContent=th.textContent.replace(/ [↑↓]$/,'')+(th.dataset.k===sort?(dir>0?' ↑':' ↓'):'')});
  const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
- $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score??'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${o.price.toFixed(2)}</b></td><td class="r m">${(o.price/o.ram).toFixed(2)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
- $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">€${o.price.toFixed(2)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}${o.cpu_score?' · CPU '+o.cpu_score:''}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
+ $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score??'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${money(o.price)}</b></td><td class="r m">${money(o.price/o.ram)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
+ $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${money(o.price)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}${o.cpu_score?' · CPU '+o.cpu_score:''}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
  const code=(F.kind?'k'+F.kind[0]:'')+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
  $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
@@ -266,33 +275,50 @@ $('more').onclick=()=>{shown+=60;draw()};
 document.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;dir=sort===k?-dir:1;sort=k;draw()});
 const ago=t=>{const m=Math.round((Date.now()-new Date(t))/6e4);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
 
-fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+function renderTop(){const d=DOC;if(!d)return;
+ const hosts=Object.keys(d.sources),best=a=>[...a].sort((x,y)=>x.price-y.price)[0],eur=o=>o?money(o.price):'–';
+ const sure=D.filter(o=>o.signal==='verified'&&fresh(o)===0),ded=sure.filter(o=>o.kind==='dedicated');
+ $('nh2').textContent=hosts.length;$('f1').textContent=D.length.toLocaleString();$('f2').textContent=eur(best(ded));$('f4').textContent=ago(d.at);
+ const picks=[['Cheapest dedicated',best(ded)],['Most RAM under '+money(100,0),ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
+ $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">${money(o.price)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div><div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
+ const by={};D.forEach(o=>{const b=by[o.provider]??={n:0,min:1e9};b.n++;b.min=Math.min(b.min,o.price)});
+ $('hosts').innerHTML=hosts.map(k=>`<button class="host" data-h="${esc(k)}"><b>${esc(k)}</b><span>${FRESH[k]===2?'no recent check':by[k]?by[k].n+' in stock · from '+money(by[k].min):'none in stock'}</span></button>`).join('');
+ $('hosts').querySelectorAll('.host').forEach(b=>b.onclick=()=>{F.prov=b.dataset.h;syncInputs();shown=60;draw();$('all').scrollIntoView({behavior:'smooth'})});
+ $('fxnote').textContent=CUR==='EUR'?'':`Prices in ${CURS[CUR][1]} are converted from euro at the European Central Bank rate of ${d.fx&&d.fx.date||'–'} (≈). Hosts bill in their own currency.`;
+}
+function renderTape(){const ev=EV;if(!ev.length)return;
+ const lab={sold_out:['down','Sold out'],appeared:['up','New'],restocked:['up','Back'],price_changed:['amb','Price']};
+ const items=ev.filter(e=>lab[e.type]).map(e=>{const [c,l]=lab[e.type],n=e.kind==='dedicated'?e.cpu.replace(/^(Intel|AMD)\s+/,''):e.name;
+  const pr=e.type==='price_changed'?`${money(e.old_price)} → ${money(e.new_price)}`:money(e.new_price??e.old_price);
+  const href=e.url||('?h='+encodeURIComponent(e.provider)+'#all'),ext=!!e.url;   // each item opens the host's page for that server
+  return `<a href="${esc(href)}"${ext?' target="_blank" rel="noopener nofollow"':''} title="Open on ${esc(e.provider)}"><b class="${c}">${l}</b> ${esc(n)} ${e.ram}GB · ${esc(e.provider)} · ${pr} · ${ago(e.at)}${ext?' ↗':''}</a>`}).join('');
+ if(!items)return;$('tape').hidden=false;$('track').innerHTML=items+items.replace(/<a /g,'<a tabindex="-1" aria-hidden="true" ');   // doubled, so the loop has no seam
+ $('track').style.setProperty('--dur',Math.round($('track').scrollWidth/2/40)+'s');   // about 40 px per second
+}
+function setCur(c,save){if(!CURS[c]||(c!=='EUR'&&!FX[c]))c='EUR';CUR=c;$('curtxt').textContent=c;
+ $('curl').innerHTML=Object.keys(CURS).filter(k=>k==='EUR'||FX[k]).map(k=>`<li role="option" tabindex="-1" data-c="${k}" aria-selected="${k===CUR}">${k}<small>${CURS[k][1]}</small></li>`).join('');
+ if(save){try{localStorage.setItem('ds-cur',c)}catch(e){}}
+ priceOpts();build();renderTop();renderTape();draw()}
+$('b-cur').addEventListener('click',e=>{e.stopPropagation();const l=$('curl'),open=l.hidden;closeAll();l.hidden=!open;$('b-cur').setAttribute('aria-expanded',String(open));if(open)(l.querySelector('[aria-selected="true"]')||l.firstElementChild).focus()});
+$('curl').addEventListener('click',e=>{const li=e.target.closest('li');if(!li)return;$('curl').hidden=true;$('b-cur').setAttribute('aria-expanded','false');setCur(li.dataset.c,true);$('b-cur').focus()});
+$('curl').addEventListener('keydown',e=>{const li=e.target.closest('li');if(!li)return;const all=[...$('curl').children],i=all.indexOf(li);
+ if(e.key==='ArrowDown'){e.preventDefault();(all[i+1]||all[0]).focus()}else if(e.key==='ArrowUp'){e.preventDefault();(all[i-1]||all[all.length-1]).focus()}
+ else if(e.key==='Enter'||e.key===' '){e.preventDefault();li.click()}else if(e.key==='Escape'){$('curl').hidden=true;$('b-cur').focus()}});
+document.addEventListener('click',e=>{if(!e.target.closest('#curdd')){$('curl').hidden=true;$('b-cur').setAttribute('aria-expanded','false')}});
+
+fetch('radar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{DOC=d;FX=(d.fx&&d.fx.rates)||{};
  const now=Date.now(),stale=[];
  for(const [k,v] of Object.entries(d.sources)){const t=v.last_success?now-new Date(v.last_success):Infinity;FRESH[k]=t>6*H?2:t>2*H?1:0;if(FRESH[k])stale.push(k)}
  if(now-new Date(d.at)>2*H){$('banner').hidden=false;$('banner').textContent=`This data is from ${new Date(d.at).toLocaleString()}. Stock may have changed since then.`}
  else if(stale.length){$('banner').hidden=false;$('banner').textContent=`Not confirmed right now: ${stale.join(', ')}. The last good check was over 2 hours ago.`}
  D=group(d.offers.filter(o=>o.stock==='in'&&fresh(o)<2));
- const hosts=Object.keys(d.sources),best=a=>[...a].sort((x,y)=>x.price-y.price)[0],eur=o=>o?'€'+o.price.toFixed(2):'–';
- const sure=D.filter(o=>o.signal==='verified'&&fresh(o)===0),ded=sure.filter(o=>o.kind==='dedicated');
- $('nh2').textContent=hosts.length;$('f1').textContent=D.length.toLocaleString();$('f2').textContent=eur(best(ded));$('f4').textContent=ago(d.at);
- const picks=[['Cheapest dedicated',best(ded)],['Most RAM under €100',ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
- $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">€${o.price.toFixed(2)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div><div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
- const cos=[...new Set(hosts.map(company))];UI.find(u=>u.id==='prov').opts=[['','All'],...cos.map(k=>[k,k])];
+ const hosts=Object.keys(d.sources),cos=[...new Set(hosts.map(company))];UI.find(u=>u.id==='prov').opts=[['','All'],...cos.map(k=>[k,k])];
  const regs=[...new Set(D.map(region))].sort(),ru=UI.find(u=>u.id==='reg');ru.opts=[['','All'],...regs.map(k=>[k,k])];ru.hide=regs.length<2;
- const by={};D.forEach(o=>{const b=by[o.provider]??={n:0,min:1e9};b.n++;b.min=Math.min(b.min,o.price)});
- $('hosts').innerHTML=hosts.map(k=>`<button class="host" data-h="${esc(k)}"><b>${esc(k)}</b><span>${FRESH[k]===2?'no recent check':by[k]?by[k].n+' in stock · from €'+by[k].min.toFixed(2):'none in stock'}</span></button>`).join('');
- $('hosts').querySelectorAll('.host').forEach(b=>b.onclick=()=>{F.prov=b.dataset.h;syncInputs();shown=60;draw();$('all').scrollIntoView({behavior:'smooth'})});
- readURL();syncInputs();draw();
+ readURL();let c=new URLSearchParams(location.search).get('c');if(!c){try{c=localStorage.getItem('ds-cur')}catch(e){}}
+ setCur((c||'EUR').toUpperCase(),false);
 }).catch(()=>{$('empty').hidden=false;$('empty').textContent='Could not load stock data. Reload the page.'});
 
-fetch('events.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(ev=>{if(!ev.length)return;
- const lab={sold_out:['down','Sold out'],appeared:['up','New'],restocked:['up','Back'],price_changed:['amb','Price']};
- const items=ev.filter(e=>lab[e.type]).map(e=>{const [c,l]=lab[e.type],n=e.kind==='dedicated'?e.cpu.replace(/^(Intel|AMD)\s+/,''):e.name;
-  const pr=e.type==='price_changed'?`€${e.old_price} → €${e.new_price}`:'€'+(e.new_price??e.old_price);// Each item opens the host's page for that server. No stored page yet -> our table filtered to that host.
-  const sold=e.type==='sold_out',href=e.url||('?h='+encodeURIComponent(e.provider)+'#all'),ext=!!e.url;
-  return `<a href="${esc(href)}"${ext?' target="_blank" rel="noopener nofollow"':''} title="${sold?'Sold out. Open the host page to see what is left':'Open on '+esc(e.provider)}"><b class="${c}">${l}</b> ${esc(n)} ${e.ram}GB · ${esc(e.provider)} · ${pr} · ${ago(e.at)}${ext?' ↗':''}</a>`}).join('');
- if(!items)return;$('tape').hidden=false;$('track').innerHTML=items+items.replace(/<a /g,'<a tabindex="-1" aria-hidden="true" ');                 // doubled, so the loop has no seam
- $('track').style.setProperty('--dur',Math.round($('track').scrollWidth/2/40)+'s')}).catch(()=>{});   // about 40 px per second: easy to read
+fetch('events.json',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(ev=>{EV=ev||[];renderTape()}).catch(()=>{});
 })();
 </script>
 </body></html>
