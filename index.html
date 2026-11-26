@@ -133,7 +133,24 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 .fg ul{list-style:none;margin:0;padding:0}.fg li{margin:5px 0}.fg a{color:var(--fg);text-decoration:none}.fg a:hover{color:var(--acc);text-decoration:underline}
 .fb{color:var(--mut);font-size:13px;max-width:34ch}
 @media (max-width:760px){.fg{grid-template-columns:1fr 1fr}.fg>div:first-child{grid-column:1/-1}}
+.mbar,.mpills,.sh,.mshow,.shade{display:none}
 @media (max-width:760px){
+ .dk{display:none}
+ .mbar{display:flex;gap:8px;align-items:center;position:sticky;top:0;z-index:6;background:var(--bg);padding:8px 0}.mbar .sp{flex:1}
+ .mbtn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:500 14px Geist,sans-serif;text-decoration:none;cursor:pointer}
+ .mbtn svg{width:15px;height:15px}.mbtn.on{border-color:var(--acc);color:var(--acc)}.mbell{width:36px;padding:0;justify-content:center}
+ .mn{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:9px;background:var(--acc);color:var(--accfg);font:600 11px Geist;padding:0 5px}
+ .msort{position:relative}.msort .ddl{min-width:190px}
+ .mpills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}.mpills:empty{display:none}
+ .mpill{font:500 12.5px Geist,sans-serif;border:1px solid var(--line);border-radius:99px;padding:3px 10px;background:none;color:var(--fg);cursor:pointer}.mpill i{font-style:normal;color:var(--mut);margin-left:6px}
+ #sheet{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:40;display:none;flex-direction:column;align-items:stretch;gap:10px;max-height:86vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -12px 30px rgba(0,0,0,.35)}
+ #sheet.open{display:flex}
+ #sheet .sh{display:flex;justify-content:space-between;align-items:center}#sheet .sh b{font-size:16px}
+ #sheet #fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}#sheet .fl{min-width:0}#sheet .ddb,#sheet .stp{width:100%}#sheet .stp output{flex:1}
+ #sheet .ddl{position:static;box-shadow:none;margin-top:4px;max-height:none}
+ #sheet .am,#sheet>.reset,#sheet>.sp,#sheet .alert{display:none}
+ .mshow{display:block;height:46px;border:0;border-radius:10px;background:var(--acc);color:var(--accfg);font:600 15px Geist,sans-serif;cursor:pointer}
+ .shade{position:fixed;inset:0;z-index:39;background:rgba(0,0,0,.5)}.shade:not([hidden]){display:block}
  .wrap{padding:0 16px 56px}
  .facts{grid-template-columns:1fr 1fr}.fact:nth-child(3){border-left:0}.fact:nth-child(n+3){border-top:1px solid var(--line)}
  .cols{grid-template-columns:1fr;gap:0}
@@ -158,8 +175,12 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 <h2>Best value right now</h2>
 <div class="picks" id="picks"></div>
 
-<h2 id="all">All servers<span class="cnt m" id="cnt"></span></h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort. <span id="fxnote"></span></p>
-<div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div></div>
+<h2 id="all">All servers<span class="cnt m" id="cnt"></span></h2><p class="h2s">Prices per month, without VAT. <span class="dk">Tap a column name to sort. </span><span id="fxnote"></span></p>
+<div class="mbar"><button type="button" class="mbtn" id="mf" aria-controls="sheet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters<span class="mn" id="mfn" hidden></span></button>
+<div class="dd msort" id="msortdd"><button type="button" class="mbtn" id="ms" aria-haspopup="listbox" aria-expanded="false"><span id="mst">Price ↑</span></button><ul class="ddl" id="msl" role="listbox" aria-label="Sort" hidden></ul></div>
+<span class="sp"></span><a class="mbtn mbell" id="mbell" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-label="Telegram alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></a></div>
+<div class="mpills" id="mpills"></div>
+<div class="shade" id="shade" hidden></div><div class="bar" id="sheet"><div class="sh"><b>Filters</b><button type="button" class="reset" id="reset2">Reset</button></div><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div><button type="button" class="mshow" id="mshow">Show results</button></div>
 <table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th class="r" data-k="cpu_score" title="Multi-core CPU speed, Blender Open Data">CPU speed</th><th>Location</th><th>Stock</th><th class="r" data-k="price">Price / month</th><th class="r" data-k="gb">Per GB RAM</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
@@ -268,8 +289,24 @@ function draw(){
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
  const code=(F.kind?'k'+F.kind[0]:'')+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
  $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
+ $('mbell').href=$('alert').href;
+ const act=[];if(F.kind)act.push(['kind',F.kind==='dedicated'?'Dedicated':'VPS']);if(F.prov)act.push(['prov',F.prov]);if(F.reg)act.push(['reg',F.reg]);
+ if(F.t)act.push(['t',F.t+'+ threads']);if(F.r)act.push(['r',F.r+' GB +']);if(F.p)act.push(['p','up to '+money(F.p,0)]);if(F.dt)act.push(['dt',F.dt.toUpperCase().replace('NVME','NVMe')]);if(F.ds)act.push(['ds',gb(F.ds)+' +']);
+ $('mfn').hidden=!act.length;$('mfn').textContent=act.length;$('mf').classList.toggle('on',act.length>0);
+ $('mpills').innerHTML=act.map(([k,l])=>`<button type="button" class="mpill" data-k="${k}">${esc(l)}<i>✕</i></button>`).join('');
+ const SL=SORTS.find(x=>x[0]===sort&&x[1]===dir);$('mst').textContent=SL?SL[2]:'Sort';
+ $('mshow').textContent='Show '+rows.length.toLocaleString()+(rows.length===1?' server':' servers');
  writeURL();
 }
+const SORTS=[['price',1,'Price ↑'],['price',-1,'Price ↓'],['cpu_score',-1,'CPU speed'],['ram',-1,'Most RAM'],['gb',1,'Price per GB'],['threads',-1,'Most threads']];
+function sheet(open){$('sheet').classList.toggle('open',open);$('shade').hidden=!open;document.body.style.overflow=open?'hidden':'';if(!open)closeAll()}
+$('mf').onclick=()=>sheet(true);$('shade').onclick=()=>sheet(false);$('mshow').onclick=()=>{sheet(false);$('all').scrollIntoView({behavior:'smooth'})};
+$('reset2').onclick=()=>$('reset').click();
+$('mpills').addEventListener('click',e=>{const b=e.target.closest('.mpill');if(!b)return;const k=b.dataset.k;F[k]=NUM.includes(k)?0:'';apply()});
+$('ms').addEventListener('click',e=>{e.stopPropagation();const l=$('msl'),open=l.hidden;closeAll();$('msl').innerHTML=SORTS.map(([k,d,n],i)=>`<li role="option" tabindex="-1" data-i="${i}" aria-selected="${k===sort&&d===dir}">${n}</li>`).join('');l.hidden=!open;$('ms').setAttribute('aria-expanded',String(open));if(open)l.firstElementChild.focus()});
+$('msl').addEventListener('click',e=>{const li=e.target.closest('li');if(!li)return;const x=SORTS[+li.dataset.i];sort=x[0];dir=x[1];$('msl').hidden=true;$('ms').setAttribute('aria-expanded','false');shown=60;draw()});
+document.addEventListener('click',e=>{if(!e.target.closest('#msortdd'))$('msl').hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('sheet').classList.contains('open'))sheet(false)});
 $('reset').onclick=()=>{for(const k in F)F[k]=NUM.includes(k)?0:'';apply()};
 $('more').onclick=()=>{shown+=60;draw()};
 document.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;dir=sort===k?-dir:1;sort=k;draw()});
