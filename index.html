@@ -158,7 +158,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 
 <h2 id="all">All servers<span class="cnt m" id="cnt"></span></h2><p class="h2s">Prices per month, without VAT. Tap a column name to sort.</p>
 <div class="bar"><div id="fields"></div><button class="reset" id="reset" type="button" hidden>Reset</button><span class="sp"></span><div class="fl am"><a class="alert" id="alert" href="https://t.me/DedistockBot" target="_blank" rel="noopener" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="alertTxt">Get Telegram alerts</span></a><div class="ddl right amenu" id="amenu" role="menu" hidden><div class="amh">Alert me when one is in stock</div><div id="apre"></div><div class="amf">Or set any filter, then tap this button again.</div></div></div></div>
-<table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th>Location</th><th>Stock</th><th class="r" data-k="price">€ / month</th><th class="r" data-k="gb">€ / GB</th><th></th></tr></thead><tbody id="tb"></tbody></table>
+<table><thead><tr><th data-k="cpu">Server</th><th data-k="provider">Host</th><th class="r" data-k="threads">Threads</th><th class="r" data-k="ram">RAM</th><th class="r" data-k="disk">Disk</th><th class="r" data-k="cpu_score" title="Multi-core CPU speed, Blender Open Data">CPU speed</th><th>Location</th><th>Stock</th><th class="r" data-k="price">€ / month</th><th class="r" data-k="gb">€ / GB</th><th></th></tr></thead><tbody id="tb"></tbody></table>
 <div class="cards" id="cards"></div>
 <div class="empty" id="empty" hidden>Nothing in stock matches. Try a higher price or fewer threads.</div>
 <button class="more" id="more" hidden>Show more</button>
@@ -176,6 +176,7 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:26px 0 10px;font
 
 <div class="notes">
  <p>Prices and plan details are quoted from each host's own website. Every row links to the source. Prices can change before you order.</p>
+ <p>CPU speed: multi-core render speed from <a href="https://opendata.blender.org" rel="noopener">Blender Open Data</a> (CC0), median of public benchmark runs. Higher is faster. An estimate for the CPU model, not a test of this server. No score for dual-CPU servers.</p>
  <p>OVH lists only servers ready in about 1 hour. Hetzner auction prices include the IPv4 address. Netcup prices are for a 12-month term.</p>
  <p>The Telegram bot keeps your chat id and your alerts. Send /stop to delete them. Dedistock does not sell servers.</p>
 </div>
@@ -245,7 +246,7 @@ function readURL(){const q=new URLSearchParams(location.search);for(const [f,k] 
 function writeURL(){const q=new URLSearchParams();for(const [f,k] of Object.entries(QK))if(F[f])q.set(k,F[f]);if(sort!=='price'||dir<0){q.set('o',sort);if(dir<0)q.set('d','desc')}
  const u=location.pathname+(q.toString()?'?'+q:'');if(u!==location.pathname+location.search)history.replaceState(null,'',u)}
 const syncInputs=build;
-const KEY={price:o=>o.price,gb:o=>o.price/o.ram,threads:o=>o.threads,ram:o=>o.ram,disk:o=>o.disk,cpu:o=>name(o).toLowerCase(),provider:o=>o.provider};
+const KEY={cpu_score:o=>o.cpu_score||0,price:o=>o.price,gb:o=>o.price/o.ram,threads:o=>o.threads,ram:o=>o.ram,disk:o=>o.disk,cpu:o=>name(o).toLowerCase(),provider:o=>o.provider};
 function draw(){
  let rows=D.filter(o=>(!F.kind||(o.kind==='dedicated')===(F.kind==='dedicated'))&&hostOk(o)&&(!F.reg||region(o)===F.reg)&&o.threads>=F.t&&o.ram>=F.r&&(!F.p||o.price<=F.p)&&(!F.dt||(o.disk_type||(o.nvme?'nvme':''))===F.dt)&&o.disk>=F.ds);
  const key=KEY[sort]||KEY.price;rows.sort((a,b)=>(key(a)>key(b)?1:key(a)<key(b)?-1:a.price-b.price)*dir);
@@ -253,8 +254,8 @@ function draw(){
  $('reset').hidden=!Object.values(F).some(Boolean);
  document.querySelectorAll('th[data-k]').forEach(th=>{th.dataset.k===sort?th.setAttribute('aria-sort',dir>0?'ascending':'descending'):th.removeAttribute('aria-sort');th.textContent=th.textContent.replace(/ [↑↓]$/,'')+(th.dataset.k===sort?(dir>0?' ↑':' ↓'):'')});
  const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
- $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${o.price.toFixed(2)}</b></td><td class="r m">${(o.price/o.ram).toFixed(2)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
- $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">€${o.price.toFixed(2)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
+ $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score??'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${o.price.toFixed(2)}</b></td><td class="r m">${(o.price/o.ram).toFixed(2)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
+ $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">€${o.price.toFixed(2)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}${o.cpu_score?' · CPU '+o.cpu_score:''}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
  const code=(F.kind?'k'+F.kind[0]:'')+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
  $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
