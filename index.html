@@ -99,6 +99,8 @@ h2{font:600 12px Geist,sans-serif;margin:30px 0 2px;letter-spacing:.09em;text-tr
 .amh,.amf{font-size:12px;color:var(--mut);padding:6px 10px}
 .amf{border-top:1px solid var(--line);margin-top:4px}
 .cnt{color:var(--mut);font-weight:500}
+.spdl{display:inline-flex;align-items:center;gap:7px}.spdl.r{justify-content:flex-end}.spd{display:inline-block;width:46px;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.spd i{display:block;height:100%;background:var(--acc)}.spdn{font:500 12.5px "Geist Mono",monospace;color:var(--fg)}.spdp{font-size:12px;color:var(--mut)}
 .reset{font:500 13px Geist;background:none;border:0;color:var(--acc);cursor:pointer;padding:0 0 8px;text-decoration:underline}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{font:500 11px Geist;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);text-align:left;padding:10px 8px 6px;white-space:nowrap;cursor:pointer;user-select:none}
@@ -227,6 +229,8 @@ const DT={nvme:' NVMe',ssd:' SSD',hdd:' HDD',mixed:' mixed'};
 const dsk=o=>o.disk?(o.disk>=1000?(o.disk/1000).toFixed(1)+' TB':o.disk+' GB')+(DT[o.disk_type]||(o.nvme?' NVMe':'')):'extra';
 const badge=o=>fresh(o)===1?'<span class="badge un">Not confirmed</span>':o.signal==='listed'?'<span class="badge ls">Listed</span>':o.signal==='indicative'?'<span class="badge lk">Likely</span>':'<span class="badge">In stock</span>';
 const region=o=>o.region||'Europe';
+// CPU speed (Blender Open Data, multi-core). Shown as a small meter: the score, and how many listed dedicated servers it beats.
+const spd=o=>o.cpu_score?`<span class="spd" title="CPU speed ${o.cpu_score}: faster than ${o.cpu_pct}% of dedicated servers listed (Blender Open Data)"><i style="width:${Math.max(4,o.cpu_pct||0)}%"></i></span><span class="spdn">CPU ${o.cpu_score}</span>`:'';
 const CO={'OVH Eco':'OVHcloud','OVH Bare Metal':'OVHcloud','OVH VPS':'OVHcloud','Hetzner auction':'Hetzner','Hetzner Cloud':'Hetzner','Netcup':'netcup'};
 const company=p=>CO[p]||p;const hostOk=o=>!F.prov||o.provider===F.prov||company(o.provider)===F.prov;
 // One row per plan and price: merge the locations (Hetzner Cloud and Scaleway list each city separately).
@@ -284,8 +288,8 @@ function draw(){
  $('reset').hidden=!Object.values(F).some(Boolean);
  document.querySelectorAll('th[data-k]').forEach(th=>{th.dataset.k===sort?th.setAttribute('aria-sort',dir>0?'ascending':'descending'):th.removeAttribute('aria-sort');th.textContent=th.textContent.replace(/ [↑↓]$/,'')+(th.dataset.k===sort?(dir>0?' ↑':' ↓'):'')});
  const v=rows.slice(0,shown),loc=o=>o.where.slice(0,3).join(', ')+(o.where.length>3?` +${o.where.length-3}`:'');
- $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score??'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${money(o.price)}</b></td><td class="r m">${money(o.price/o.ram)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
- $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${money(o.price)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}${o.cpu_score?' · CPU '+o.cpu_score:''}</span><span class="w">${badge(o)}</span><span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
+ $('tb').innerHTML=v.map(o=>`<tr><td class="cpu"><b>${esc(name(o))}</b><small>${esc(sub(o))}</small></td><td>${esc(o.provider)}</td><td class="r m">${o.threads}</td><td class="r m">${o.ram} GB</td><td class="r m">${dsk(o)}</td><td class="r m" title="${o.cpu_pct!=null?'Faster than '+o.cpu_pct+'% of dedicated servers listed':''}">${o.cpu_score?`<span class="spdl r">${spd(o)}</span>`:'<span style=\'color:var(--mut)\'>–</span>'}</td><td class="loc" title="${esc(o.where.join(', '))}">${esc(loc(o))}</td><td>${badge(o)}</td><td class="r m"><b>${money(o.price)}</b></td><td class="r m">${money(o.price/o.ram)}</td><td><a class="go" href="${esc(o.url)}" target="_blank" rel="noopener nofollow">Order ↗</a></td></tr>`).join('');
+ $('cards').innerHTML=v.map(o=>`<a class="c" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><span class="t">${esc(name(o))}</span><span class="p">${money(o.price)}</span><span class="s">${o.threads}t · ${o.ram}GB · ${dsk(o)}</span><span class="w">${badge(o)}</span>${o.cpu_score?`<span class="x spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}% of dedicated servers</span></span>`:''}<span class="x">${esc(o.provider)} · ${esc(loc(o))}${o.term!=='monthly'?' · '+esc(o.term)+' term':''}</span></a>`).join('');
  // The bot gets the same filter, packed into the Telegram start parameter (max 64 characters).
  const code=(F.kind?'k'+F.kind[0]:'')+(F.t?'t'+F.t:'')+(F.r?'r'+F.r:'')+(F.p?'p'+F.p:'')+(F.dt?'y'+F.dt[0]:'')+(F.ds?'s'+F.ds:'')+(F.reg?'g'+F.reg[0].toLowerCase():'');
  $('alert').href='https://t.me/DedistockBot'+(code?'?start='+code:'');$('alert').dataset.code=code;$('alertTxt').textContent=code?'Alert me on these':'Get Telegram alerts';
@@ -317,7 +321,7 @@ function renderTop(){const d=DOC;if(!d)return;
  const sure=D.filter(o=>o.signal==='verified'&&fresh(o)===0),ded=sure.filter(o=>o.kind==='dedicated');
  $('nh2').textContent=hosts.length;$('f1').textContent=D.length.toLocaleString();$('f2').textContent=eur(best(ded));$('f4').textContent=ago(d.at);
  const picks=[['Cheapest dedicated',best(ded)],['Most RAM under '+money(100,0),ded.filter(o=>o.price<=100).sort((a,b)=>b.ram-a.ram||a.price-b.price)[0]],['Cheapest 8 threads + 16 GB',best(D.filter(o=>o.threads>=8&&o.ram>=16))]];
- $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">${money(o.price)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div><div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
+ $('picks').innerHTML=picks.filter(p=>p[1]).map(([t,o])=>`<a class="pick" href="${esc(o.url)}" target="_blank" rel="noopener nofollow"><div class="tag">${t}</div><div class="pr">${money(o.price)} <small>/ month</small></div><div class="nm">${esc(name(o))}</div><div class="sp">${o.threads} threads · ${o.ram} GB · ${dsk(o)}</div>${o.cpu_score?`<div class="sp spdl">${spd(o)}<span class="spdp">faster than ${o.cpu_pct}%</span></div>`:''}<div class="sp">${esc(o.provider)} · ${esc(o.where[0]||'')}</div></a>`).join('')||'<p class="h2s">No confirmed stock right now.</p>';
  const by={};D.forEach(o=>{const b=by[o.provider]??={n:0,min:1e9};b.n++;b.min=Math.min(b.min,o.price)});
  $('hosts').innerHTML=hosts.map(k=>`<button class="host" data-h="${esc(k)}"><b>${esc(k)}</b><span>${FRESH[k]===2?'no recent check':by[k]?by[k].n+' in stock · from '+money(by[k].min):'none in stock'}</span></button>`).join('');
  $('hosts').querySelectorAll('.host').forEach(b=>b.onclick=()=>{F.prov=b.dataset.h;syncInputs();shown=60;draw();$('all').scrollIntoView({behavior:'smooth'})});
